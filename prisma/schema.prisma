@@ -6,3 +6,66 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model User {
+  id String @id @default(cuid())
+  email String @unique
+  passwordHash String
+  name String
+  memberships Membership[]
+  tasksAssigned Task[] @relation("assigneeTasks")
+  tasksCreated Task[] @relation("creatorTasks")
+}
+
+model Organization {
+  id String @id @default(cuid())
+  name String @unique
+  memberships Membership[]
+}
+
+enum Role {
+  MEMBER
+  ADMIN
+}
+
+model Membership {
+  id String @id @default(cuid())
+  user User @relation(fields: [userId], references: [id])
+  userId String
+  organization Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+  role Role
+}
+
+model Project {
+  id String @id @default(cuid())
+  name String
+  tasks Task[]
+}
+
+enum Status {
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model Task {
+  id String @id @default(cuid())
+  title String
+  description String?
+  status Status
+  priority Priority
+  project Project @relation(fields: [projectId], references: [id])
+  projectId String
+  position Int
+  creator User @relation("creatorTasks", fields: [creatorId], references: [id])
+  creatorId String
+  assignee User @relation("assigneeTasks", fields: [assigneeId], references: [id])
+  assigneeId String
+}
