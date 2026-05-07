@@ -3,8 +3,10 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "target": "ES2023",
+    "outDir": "dist",
     "strict": true,
     "esModuleInterop": true,
     "ignoreDeprecations": "6.0"
-  }
+  },
+  "include": ["src"]
 }
