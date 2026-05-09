@@ -21,6 +21,7 @@ model Organization {
   id String @id @default(cuid())
   name String @unique
   memberships Membership[]
+  projects Project[]
 }
 
 enum Role {
@@ -41,6 +42,8 @@ model Project {
   id String @id @default(cuid())
   name String
   tasks Task[]
+  organization Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
 }
 
 enum Status {
