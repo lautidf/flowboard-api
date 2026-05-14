@@ -30,7 +30,7 @@ model Organization {
 
 enum MembershipRole {
   MEMBER
-  OWNER
+  ADMIN
 }
 
 model Membership {

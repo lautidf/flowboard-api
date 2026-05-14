@@ -15,7 +15,7 @@ export async function create({ name, userId }: CreateOrganizationInput) {
 				memberships: {
 					create: {
 						userId: userId,
-						role: MembershipRole.OWNER,
+						role: MembershipRole.ADMIN,
 					},
 				},
 			},
