@@ -13,4 +13,6 @@ app.get('/', (_req: Request, res: Response) => {
   res.json({ status: 'ok' });
 });
 
+app.use('/organizations', organizationRoutes);
+
 app.use(errorHandler);
