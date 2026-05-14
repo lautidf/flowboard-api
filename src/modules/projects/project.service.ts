@@ -32,8 +32,7 @@ export async function create({
 	const project = await prisma.project.create({
 		data: {
 			name,
-			organizationId,
-			userId,
+			organizationId
 		},
 	});
 
