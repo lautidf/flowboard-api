@@ -5,10 +5,12 @@ import { errorHandler } from './middleware/error.middleware';
 
 export const app = express();
 
+app.use(express.json());
+
 app.use(authenticateJWT);
 
-app.get("/", (_req: Request, res: Response) => {
-  res.json({ status: "ok" });
+app.get('/', (_req: Request, res: Response) => {
+  res.json({ status: 'ok' });
 });
 
 app.use(errorHandler);
