@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { create, getAll, getOne } from './organization.controller';
 
-export const router = Router();
+const router = Router();
 
 router.get('/', getAll);
 router.post('/', create);
