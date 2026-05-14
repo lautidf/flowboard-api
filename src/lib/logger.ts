@@ -1,3 +1,5 @@
-import pino from "pino";
-
-export const logger = pino();
+export const logger = {
+  error: console.error,
+  warn: console.warn,
+  info: console.log,
+};
