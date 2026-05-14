@@ -2,6 +2,7 @@ import express, {Request, Response} from 'express';
 import { authenticateJWT } from './middleware/auth.middleware';
 import { organizationRoutes } from './modules/organizations/organization.routes';
 import { errorHandler } from './middleware/error.middleware';
+import { projectRoutes } from './modules/projects/project.routes';
 
 export const app = express();
 
@@ -14,5 +15,6 @@ app.get('/', (_req: Request, res: Response) => {
 });
 
 app.use('/organizations', organizationRoutes);
+app.use('/projects', projectRoutes);
 
 app.use(errorHandler);
