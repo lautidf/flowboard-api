@@ -1,8 +1,10 @@
 import { Router } from 'express';
-import { create } from './organization.controller';
+import { create, getAll, getOne } from './organization.controller';
 
 export const router = Router();
 
+router.get('/', getAll);
 router.post('/', create);
+router.get('/:id', getOne);
 
 export const organizationRoutes = router;

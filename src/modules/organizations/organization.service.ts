@@ -10,7 +10,7 @@ export async function create(name: string, userId: string) {
 				name,
 				memberships: {
 					create: {
-						userId,
+						userId: userId,
 						role: MembershipRole.OWNER,
 					},
 				},
@@ -34,6 +34,51 @@ export async function create(name: string, userId: string) {
 	}
 };
 
+export async function getAll(userId: string) {
+	const organizations = await prisma.organization.findMany({
+		where: {
+			memberships: {
+				some: {
+					userId: userId,
+				},
+			},
+		},
+		select: {
+			id: true,
+			name: true,
+		},
+	});
+
+	return organizations;
+}
+
+export async function getOne(id: string, userId: string) {
+	const organization = await prisma.organization.findFirst({
+		where: {
+			id,
+			memberships: {
+				some: {
+					userId: userId,
+				},
+			},
+		},
+		select: {
+			id: true,
+			name: true,
+			projects: {
+				select: {
+					id: true,
+					name: true,
+				},
+			},
+		},
+	});
+
+	return organization;
+}
+
 export const organizationService = {
 	create,
+	getAll,
+	getOne,
 };
