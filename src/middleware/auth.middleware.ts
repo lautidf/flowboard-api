@@ -1,6 +1,6 @@
 // Temporary development auth middleware.
 // Replace with real JWT verification later.
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from 'express';
 import { DEV_USER_EMAIL, DEV_USER_ID, NODE_ENV } from '../config/env';
 
 export function authenticateJWT(
