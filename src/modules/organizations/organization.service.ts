@@ -1,13 +1,12 @@
 import { MembershipRole } from '../../../generated/prisma/enums';
 import { PrismaClientKnownRequestError } from '../../../generated/prisma/internal/prismaNamespace';
-import { ConflictError } from '../../errors/errors';
+import { ConflictError, NotFoundError } from '../../errors/errors';
 import { prisma } from '../../lib/prisma';
 
 type CreateOrganizationInput = {
 	name: string;
 	userId: string;
 };
-
 export async function create({ name, userId }: CreateOrganizationInput) {
 	try {
 		const organization = await prisma.organization.create({
