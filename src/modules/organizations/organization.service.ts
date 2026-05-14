@@ -3,7 +3,12 @@ import { PrismaClientKnownRequestError } from '../../../generated/prisma/interna
 import { ConflictError } from '../../errors/errors';
 import { prisma } from '../../lib/prisma';
 
-export async function create(name: string, userId: string) {
+type CreateOrganizationInput = {
+	name: string;
+	userId: string;
+};
+
+export async function create({ name, userId }: CreateOrganizationInput) {
 	try {
 		const organization = await prisma.organization.create({
 			data: {
