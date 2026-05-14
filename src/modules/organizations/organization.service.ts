@@ -77,6 +77,10 @@ export async function getOne(id: string, userId: string) {
 			},
 		},
 	});
+	
+	if (!organization) {
+		throw new NotFoundError('Organization not found');
+	}
 
 	return organization;
 }
