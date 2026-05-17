@@ -15,6 +15,6 @@ app.get('/', (_req: Request, res: Response) => {
 });
 
 app.use('/organizations', organizationRoutes);
-app.use('/projects', projectRoutes);
+app.use('/', projectRoutes);
 
 app.use(errorHandler);

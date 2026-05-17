@@ -3,7 +3,7 @@ import { create, getByOrganization } from './project.controller';
 
 const router = Router();
 
-router.post('/', create);
-router.get('/', getByOrganization);
+router.post('/organizations/:id/projects', create);
+router.get('/organizations/:id/projects', getByOrganization);
 
 export const projectRoutes = router;

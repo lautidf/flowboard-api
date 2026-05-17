@@ -1,6 +1,6 @@
 import { prisma } from '../../lib/prisma';
 import { MembershipRole } from '../../../generated/prisma/enums';
-import { ForbiddenError } from '../../errors/errors';
+import { ForbiddenError, NotFoundError } from '../../errors/errors';
 
 type CreateProjectInput = {
 	name: string;
@@ -12,7 +12,8 @@ export async function create({
 	organizationId,
 	userId
 }: CreateProjectInput) {
-	await validateMembership(userId, organizationId, true);
+	await checkOrganizationExists(organizationId);
+	await requireMembership(userId, organizationId, true);
 
 	const project = await prisma.project.create({
 		data: {
@@ -28,7 +29,8 @@ export async function getByOrganization(
 	organizationId: string,
 	userId: string
 ) {
-	await validateMembership(userId, organizationId);
+	await checkOrganizationExists(organizationId);
+	await requireMembership(userId, organizationId);
 
 	const projects = await prisma.project.findMany({
 		where: {
@@ -44,15 +46,29 @@ export const projectService = {
 	getByOrganization,
 };
 
-async function validateMembership(
+async function checkOrganizationExists(organizationId: string) {
+	const organization = await prisma.organization.findUnique({
+		where: {
+			id: organizationId,
+		},
+	});
+
+	if (!organization) {
+		throw new NotFoundError('Organization not found');
+	}
+}
+
+async function requireMembership(
 	userId: string,
 	organizationId: string,
 	mustBeAdmin = false
 ) {
-	const membership = await prisma.membership.findFirst({
+	const membership = await prisma.membership.findUnique({
 		where: {
-			userId,
-			organizationId,
+			userId_organizationId: {
+				userId,
+				organizationId,
+			},
 		},
 	});
 

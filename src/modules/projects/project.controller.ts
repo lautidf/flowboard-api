@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
 import { projectService } from './project.service';
 
-export async function create(req: Request, res: Response) {
-	const { name, organizationId } = req.body;
+type CreateParams = { id: string };
+export async function create(req: Request<CreateParams>, res: Response) {
+	const { id: organizationId } = req.params;
+	const { name } = req.body;
 	const userId = req.user.id;
 
 	const project = await projectService.create({
@@ -14,12 +16,12 @@ export async function create(req: Request, res: Response) {
 	res.status(201).json(project);
 }
 
-type GetByOrganizationQuery = { organizationId: string };
+type GetByOrganizationParams = { id: string };
 export async function getByOrganization(
-	req: Request<{}, {}, {}, GetByOrganizationQuery>,
+	req: Request<GetByOrganizationParams>,
 	res: Response
 ) {
-	const { organizationId } = req.query;
+	const { id: organizationId } = req.params;
 	const userId = req.user.id;
 
 	const projects = await projectService.getByOrganization(
