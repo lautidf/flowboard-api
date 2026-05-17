@@ -32,7 +32,23 @@ export async function getByOrganization(
 	res.status(200).json(projects);
 }
 
+type GetOneParams = {
+	id: string
+};
+type GetOneQuery = {
+	organizationId: string;
+};
+export async function getOne(req: Request<GetOneParams>, res: Response) {
+	const { id } = req.params;
+	const userId = req.user.id;
+
+	const project = await projectService.getOne(id, userId);
+
+	res.status(200).json(project);
+}
+
 export const projectController = {
 	create,
 	getByOrganization,
+	getOne
 };

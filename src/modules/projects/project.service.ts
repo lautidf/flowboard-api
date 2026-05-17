@@ -41,9 +41,31 @@ export async function getByOrganization(
 	return projects;
 }
 
+export async function getOne(id: string, userId: string) {
+	const project = await prisma.project.findUnique({
+		where: {
+			id,
+			organization: {
+				memberships: {
+					some: {
+						userId,
+					},
+				},
+			},
+		},
+	});
+	
+	if (!project) {
+		throw new NotFoundError('Project not found');
+	}
+
+	return project;
+}
+
 export const projectService = {
 	create,
 	getByOrganization,
+	getOne,
 };
 
 async function checkOrganizationExists(organizationId: string) {
