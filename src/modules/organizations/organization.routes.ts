@@ -3,8 +3,8 @@ import { create, getAll, getOne } from './organization.controller';
 
 const router = Router();
 
-router.get('/', getAll);
 router.post('/', create);
+router.get('/', getAll);
 router.get('/:id', getOne);
 
 export const organizationRoutes = router;
