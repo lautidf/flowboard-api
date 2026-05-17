@@ -32,4 +32,5 @@ export async function getByOrganization(
 
 export const projectController = {
 	create,
+	getByOrganization,
 };
