@@ -13,3 +13,23 @@ export async function create(req: Request, res: Response) {
 
 	res.status(201).json(project);
 }
+
+type GetByOrganizationQuery = { organizationId: string };
+export async function getByOrganization(
+	req: Request<{}, {}, {}, GetByOrganizationQuery>,
+	res: Response
+) {
+	const { organizationId } = req.query;
+	const userId = req.user.id;
+
+	const projects = await projectService.getByOrganization(
+		organizationId,
+		userId
+	);
+
+	res.status(200).json(projects);
+}
+
+export const projectController = {
+	create,
+};

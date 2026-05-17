@@ -43,7 +43,7 @@ export async function getAll(userId: string) {
 		where: {
 			memberships: {
 				some: {
-					userId: userId,
+					userId,
 				},
 			},
 		},
@@ -62,7 +62,7 @@ export async function getOne(id: string, userId: string) {
 			id,
 			memberships: {
 				some: {
-					userId: userId,
+					userId,
 				},
 			},
 		},
