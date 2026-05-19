@@ -1,3 +1,4 @@
+import { PrismaClientKnownRequestError } from '../../../generated/prisma/internal/prismaNamespace';
 import { ConflictError } from '../../errors/errors';
 import { prisma } from '../../lib/prisma';
 import argon2 from 'argon2';
@@ -18,20 +19,31 @@ export const registerUser = async function ({
 
 	const passwordHash = await argon2.hash(password);
 
-	const user = await prisma.user.create({
-		data: {
-			email,
-			name,
-			passwordHash,
-		},
-		select: {
-			id: true,
-			email: true,
-			name: true,
-		},
-	});
+	try {
+		const user = await prisma.user.create({
+			data: {
+				email,
+				name,
+				passwordHash,
+			},
+			select: {
+				id: true,
+				email: true,
+				name: true,
+			},
+		});
 
-	return user;
+		return user;
+	} catch (error) {
+		if (
+			error instanceof PrismaClientKnownRequestError &&
+			error.code === 'P2002'
+		) {
+			throw new ConflictError('User with this email already exists');
+		}
+
+		throw error;
+	}
 };
 
 export const authService = {
