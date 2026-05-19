@@ -18,12 +18,12 @@ export async function getAll(req: Request, res: Response) {
 	res.json(organizations);
 }
 
-type GetOneParams = { id: string };
+type GetOneParams = { organizationId: string };
 export async function getOne(req: Request<GetOneParams>, res: Response) {
-	const { id } = req.params;
+	const { organizationId } = req.params;
 	const userId = req.user.id;
 
-	const organization = await organizationService.getOne(id, userId);
+	const organization = await organizationService.getOne(organizationId, userId);
 
 	res.json(organization);
 }
