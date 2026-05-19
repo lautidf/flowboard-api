@@ -5,6 +5,6 @@ const router = Router();
 
 router.post('/', create);
 router.get('/', getAll);
-router.get('/:id', getOne);
+router.get('/:organizationId', getOne);
 
 export const organizationRoutes = router;
