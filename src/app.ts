@@ -9,15 +9,15 @@ export const app = express();
 
 app.use(express.json());
 
-app.use(authenticateJWT);
-
 app.get('/', (_req: Request, res: Response) => {
   res.json({ status: 'ok' });
 });
 
-app.use('/', authRoutes);
+app.use(authRoutes);
+
+app.use(authenticateJWT);
+
 app.use('/organizations', organizationRoutes);
 app.use('/', projectRoutes);
-
 
 app.use(errorHandler);

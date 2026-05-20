@@ -1,7 +1,10 @@
 import { PrismaClientKnownRequestError } from '../../../generated/prisma/internal/prismaNamespace';
-import { ConflictError } from '../../errors/errors';
+import { ConflictError, UnauthorizedError } from '../../errors/errors';
 import { prisma } from '../../lib/prisma';
 import argon2 from 'argon2';
+import jwt from 'jsonwebtoken';
+import { JwtPayload } from '../../types/auth.types';
+import { JWT_SECRET } from '../../config/env';
 
 type RegisterUserInput = {
 	email: string;
@@ -46,6 +49,41 @@ export async function registerUser({
 	}
 };
 
+type LoginInput = {
+	email: string;
+	password: string;
+};
+export async function login({ email, password }: LoginInput) {
+	const user = await prisma.user.findUnique({ where: { email } });
+
+  if (!user) {
+    throw new UnauthorizedError('Invalid credentials');
+  }
+
+	const passwordIsCorrect = await argon2.verify(user.passwordHash, password);
+
+	if (!passwordIsCorrect) {
+		throw new UnauthorizedError('Invalid credentials');
+	}
+
+  const payload: JwtPayload = {
+    sub: user.id,
+    email: user.email,
+  };
+
+  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+
+	return {
+		user: {
+			id: user.id,
+			email: user.email,
+			name: user.name
+		},
+		token
+	};
+}
+
 export const authService = {
   registerUser,
+  login,
 };

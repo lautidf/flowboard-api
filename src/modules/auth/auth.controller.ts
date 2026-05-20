@@ -8,3 +8,11 @@ export async function registerUser(req: Request, res: Response) {
 
 	res.status(201).json({ user });
 }
+
+export async function login(req: Request, res: Response) {
+  const { email, password } = req.body;
+
+  const result = await authService.login({ email, password });
+
+  res.status(200).json(result);
+}

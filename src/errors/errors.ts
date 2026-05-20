@@ -22,3 +22,9 @@ export class ForbiddenError extends AppError {
 		super(message, 403);
 	}
 }
+
+export class UnauthorizedError extends AppError {
+	constructor(message: string) {
+		super(message, 401);
+	}
+}
