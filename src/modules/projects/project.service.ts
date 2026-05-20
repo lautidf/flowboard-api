@@ -68,11 +68,11 @@ export const projectService = {
 	getOne,
 };
 
-async function checkOrganizationExists(organizationId: string) {
+async function checkOrganizationExists(id: string) {
 	const organization = await prisma.organization.findUnique({
 		where: {
-			id: organizationId,
-		},
+			id
+		}
 	});
 
 	if (!organization) {
