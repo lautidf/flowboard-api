@@ -8,7 +8,7 @@ type RegisterUserInput = {
 	name: string;
 	password: string;
 };
-export const registerUser = async function ({
+export async function registerUser({
 	email,
 	name,
 	password
