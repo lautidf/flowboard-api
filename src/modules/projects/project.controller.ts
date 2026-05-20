@@ -32,9 +32,7 @@ export async function getByOrganization(
 	res.status(200).json(projects);
 }
 
-type GetOneParams = {
-	projectId: string
-};
+type GetOneParams = {	projectId: string };
 export async function getOne(req: Request<GetOneParams>, res: Response) {
 	const { projectId } = req.params;
 	const userId = req.user.id;
