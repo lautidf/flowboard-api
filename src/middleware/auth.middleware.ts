@@ -31,6 +31,12 @@ export function authenticateJWT(
 
     next();
   } catch (error) {
-    throw new UnauthorizedError('Invalid or expired token');
+    if (error instanceof jwt.TokenExpiredError) {
+			throw new UnauthorizedError('Expired token');
+    }
+		if (error instanceof jwt.JsonWebTokenError) {
+			throw new UnauthorizedError('Invalid token');
+		}
+    throw error;
   }
 }
