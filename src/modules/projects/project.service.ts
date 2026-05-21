@@ -1,6 +1,7 @@
 import { prisma } from '../../lib/prisma';
 import { NotFoundError } from '../../errors/errors';
 import { requireMembership, requireOrganizationExists } from '../organizations/organization.helpers';
+import { MembershipRole } from '../../../generated/prisma/client';
 
 type CreateProjectInput = {
 	name: string;
@@ -13,7 +14,11 @@ export async function create({
 	userId
 }: CreateProjectInput) {
 	await requireOrganizationExists(organizationId);
-	await requireMembership(userId, organizationId, true);
+	await requireMembership({
+		userId,
+		organizationId,
+		minimumRole: MembershipRole.ADMIN
+	});
 
 	const project = await prisma.project.create({
 		data: {
@@ -30,7 +35,7 @@ export async function getByOrganization(
 	userId: string
 ) {
 	await requireOrganizationExists(organizationId);
-	await requireMembership(userId, organizationId);
+	await requireMembership({ userId,	organizationId });
 
 	const projects = await prisma.project.findMany({
 		where: {
