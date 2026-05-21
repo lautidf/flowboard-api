@@ -4,6 +4,7 @@ import { organizationRoutes } from './modules/organizations/organization.routes'
 import { errorHandler } from './middleware/error.middleware';
 import { projectRoutes } from './modules/projects/project.routes';
 import { authRoutes } from './modules/auth/auth.routes';
+import { invitationRoutes } from './modules/invitations/invitation.routes';
 
 export const app = express();
 
@@ -19,5 +20,6 @@ app.use(authenticateJWT);
 
 app.use('/organizations', organizationRoutes);
 app.use('/', projectRoutes);
+app.use('/', invitationRoutes);
 
 app.use(errorHandler);
