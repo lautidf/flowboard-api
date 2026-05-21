@@ -1,6 +1,6 @@
 import { prisma } from '../../lib/prisma';
-import { MembershipRole } from '../../../generated/prisma/enums';
-import { ForbiddenError, NotFoundError } from '../../errors/errors';
+import { NotFoundError } from '../../errors/errors';
+import { requireMembership, requireOrganizationExists } from '../organizations/organization.helpers';
 
 type CreateProjectInput = {
 	name: string;
@@ -12,7 +12,7 @@ export async function create({
 	organizationId,
 	userId
 }: CreateProjectInput) {
-	await checkOrganizationExists(organizationId);
+	await requireOrganizationExists(organizationId);
 	await requireMembership(userId, organizationId, true);
 
 	const project = await prisma.project.create({
@@ -29,7 +29,7 @@ export async function getByOrganization(
 	organizationId: string,
 	userId: string
 ) {
-	await checkOrganizationExists(organizationId);
+	await requireOrganizationExists(organizationId);
 	await requireMembership(userId, organizationId);
 
 	const projects = await prisma.project.findMany({
@@ -67,38 +67,3 @@ export const projectService = {
 	getByOrganization,
 	getOne,
 };
-
-async function checkOrganizationExists(id: string) {
-	const organization = await prisma.organization.findUnique({
-		where: {
-			id
-		}
-	});
-
-	if (!organization) {
-		throw new NotFoundError('Organization not found');
-	}
-}
-
-async function requireMembership(
-	userId: string,
-	organizationId: string,
-	mustBeAdmin = false
-) {
-	const membership = await prisma.membership.findUnique({
-		where: {
-			userId_organizationId: {
-				userId,
-				organizationId,
-			},
-		},
-	});
-
-	if (!membership) {
-		throw new ForbiddenError('User is not a member of the organization');
-	}
-
-	if(mustBeAdmin && membership.role !== MembershipRole.ADMIN) {
-		throw new ForbiddenError('User is not an admin of the organization');
-	}
-}
