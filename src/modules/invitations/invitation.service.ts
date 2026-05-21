@@ -80,7 +80,46 @@ export async function getByOrganization(
 	});
 }
 
+type RemoveInput = {
+	organizationId: string;
+	invitedUserId: string;
+	authenticatedUserId: string;
+};
+export async function remove({
+	organizationId,
+	invitedUserId,
+	authenticatedUserId
+}: RemoveInput) {
+	await requireOrganizationExists(organizationId);
+	await requireMembership({
+		organizationId,
+		userId: authenticatedUserId,
+		minimumRole: MembershipRole.ADMIN
+	});
+
+	try {
+		await prisma.invitation.delete({
+			where: {
+				invitedUserId_organizationId: {
+					invitedUserId,
+					organizationId
+				}
+			}
+		});
+	} catch (error) {
+		if (
+			error instanceof PrismaClientKnownRequestError
+			&& error.code === 'P2025'
+		) {
+			throw new NotFoundError('Invitation not found');
+		}
+
+		throw error;
+	}
+}
+
 export const invitationService = {
 	create,
 	getByOrganization,
+	delete: remove,
 };

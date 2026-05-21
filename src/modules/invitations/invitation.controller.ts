@@ -39,3 +39,23 @@ export async function getByOrganization(
 
 	res.status(200).json(invitations);
 }
+
+type RemoveParams = {
+	organizationId: string;
+	userId: string;
+};
+export async function remove(
+	req: Request<RemoveParams>,
+	res: Response
+) {
+	const { organizationId, userId: invitedUserId } = req.params;
+	const { id: authenticatedUserId } = req.user;
+
+	await invitationService.delete({
+		organizationId,
+		invitedUserId,
+		authenticatedUserId
+	});
+
+	res.status(204).send();
+}
