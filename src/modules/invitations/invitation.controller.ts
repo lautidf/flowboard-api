@@ -21,3 +21,21 @@ export async function send(
 
 	res.status(201).json({ message: 'Invitation sent successfully' });
 }
+
+type GetByOrganizationParams = {
+	organizationId: string;
+};
+export async function getByOrganization(
+	req: Request<GetByOrganizationParams>,
+	res: Response
+) {
+	const { organizationId } = req.params;
+	const { id: userId } = req.user;
+
+	const invitations = await invitationService.getByOrganization(
+		organizationId,
+		userId
+	);
+
+	res.status(200).json(invitations);
+}

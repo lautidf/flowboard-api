@@ -55,6 +55,32 @@ export async function create({
 	}
 }
 
+export async function getByOrganization(
+	organizationId: string,
+	userId: string
+) {
+	await requireOrganizationExists(organizationId);
+	await requireMembership({
+		organizationId,
+		userId,
+		minimumRole: MembershipRole.ADMIN
+	});
+
+	return prisma.invitation.findMany({
+		where: { organizationId },
+		select: {
+			invitedUser: {
+				select: {
+					id: true,
+					email: true,
+					name: true
+				}
+			}
+		}
+	});
+}
+
 export const invitationService = {
 	create,
+	getByOrganization,
 };
