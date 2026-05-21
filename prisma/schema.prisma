@@ -17,6 +17,8 @@ model User {
   memberships Membership[]
   tasksAssigned Task[] @relation("assigneeTasks")
   tasksCreated Task[] @relation("creatorTasks")
+  invitationsReceived Invitation[] @relation("invitationsReceived")
+  invitationsSent Invitation[] @relation("invitationsSent")
 }
 
 model Organization {
@@ -26,6 +28,7 @@ model Organization {
 
   memberships Membership[]
   projects Project[]
+  invitations Invitation[]
 }
 
 enum MembershipRole {
@@ -44,6 +47,21 @@ model Membership {
 
   @@id([userId, organizationId])
 }
+
+model Invitation {
+  invitedUserId String
+  organizationId String
+
+  senderId String
+  role MembershipRole
+
+  invitedUser User @relation("invitationsReceived", fields: [invitedUserId], references: [id], onDelete: Cascade)
+  sender User @relation("invitationsSent", fields: [senderId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@id ([invitedUserId, organizationId])
+}
+
 
 model Project {
   id String @id @default(cuid())
