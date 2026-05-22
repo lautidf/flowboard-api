@@ -151,10 +151,47 @@ export async function reject(userId: string, organizationId: string) {
 	});
 }
 
+export async function accept(userId: string, organizationId: string) {
+	const invitation = await prisma.invitation.findUnique({
+		where: {
+			invitedUserId_organizationId: {
+				invitedUserId: userId,
+				organizationId
+			}
+		},
+		select: {
+			role: true
+		}
+	});
+
+	if (!invitation) {
+		throw new NotFoundError('Invitation not found');
+	}
+
+	await prisma.$transaction([
+		prisma.membership.create({
+			data: {
+				userId,
+				organizationId,
+				role: invitation.role
+			}
+		}),
+		prisma.invitation.delete({
+			where: {
+				invitedUserId_organizationId: {
+					invitedUserId: userId,
+					organizationId
+				}
+			}
+		})
+	]);
+}
+
 export const invitationService = {
 	create,
 	getByOrganization,
 	delete: remove,
 	getForUser,
 	reject,
+	accept,
 };

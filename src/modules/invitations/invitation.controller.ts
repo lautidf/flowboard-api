@@ -76,3 +76,12 @@ export async function reject(req: Request, res: Response) {
 
 	res.status(204).send();
 }
+
+export async function accept(req: Request, res: Response) {
+	const { organizationId } = req.body;
+	const { id: userId } = req.user;
+
+	await invitationService.accept(userId, organizationId);
+
+	res.status(204).send();
+}
