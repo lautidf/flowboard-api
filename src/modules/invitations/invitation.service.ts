@@ -16,8 +16,8 @@ export async function create({
 	role,
 	senderId
 }: SendInput) {
-	requireOrganizationExists(organizationId);
-	requireMembership({
+	await requireOrganizationExists(organizationId);
+	await requireMembership({
 		userId: senderId,
 		organizationId,
 		minimumRole: MembershipRole.ADMIN
