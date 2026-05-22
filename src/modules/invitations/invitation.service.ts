@@ -32,6 +32,19 @@ export async function create({
 		throw new NotFoundError('User not found');
 	}
 
+	const membership = await prisma.membership.findUnique({
+		where: {
+			userId_organizationId: {
+				userId: invitedUser.id,
+				organizationId
+			}
+		}
+	});
+
+	if (membership) {
+		throw new ConflictError('User is already a member of the organization');
+	}
+	
 	try {
 		const invitation = await prisma.invitation.create({
 			data: {
