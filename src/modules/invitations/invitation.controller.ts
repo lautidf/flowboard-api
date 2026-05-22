@@ -67,3 +67,12 @@ export async function getForUser(req: Request, res: Response) {
 
 	res.status(200).json(invitations);
 }
+
+export async function reject(req: Request, res: Response) {
+	const { organizationId } = req.body;
+	const { id: userId } = req.user;
+
+	await invitationService.reject(userId, organizationId);
+
+	res.status(204).send();
+}

@@ -140,9 +140,21 @@ export async function getForUser(userId: string) {
 	});
 }
 
+export async function reject(userId: string, organizationId: string) {
+	await prisma.invitation.delete({
+		where: {
+			invitedUserId_organizationId: {
+				invitedUserId: userId,
+				organizationId
+			}
+		}
+	});
+}
+
 export const invitationService = {
 	create,
 	getByOrganization,
 	delete: remove,
 	getForUser,
+	reject,
 };
