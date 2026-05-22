@@ -118,8 +118,31 @@ export async function remove({
 	}
 }
 
+export async function getForUser(userId: string) {
+	return prisma.invitation.findMany({
+		where: { invitedUserId: userId },
+		select: {
+			invitedUserId: true,
+			role: true,
+			organization: {
+				select: {
+					id: true,
+					name: true
+				}
+			},
+			sender: {
+				select: {
+					email: true,
+					name: true
+				}
+			}
+		}
+	});
+}
+
 export const invitationService = {
 	create,
 	getByOrganization,
 	delete: remove,
+	getForUser,
 };

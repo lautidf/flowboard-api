@@ -59,3 +59,11 @@ export async function remove(
 
 	res.status(204).send();
 }
+
+export async function getForUser(req: Request, res: Response) {
+	const { id: userId } = req.user;
+
+	const invitations = await invitationService.getForUser(userId);
+
+	res.status(200).json(invitations);
+}
