@@ -62,7 +62,6 @@ model Invitation {
   @@id ([invitedUserId, organizationId])
 }
 
-
 model Project {
   id String @id @default(cuid())
 
@@ -91,8 +90,8 @@ model Task {
 
   title String
   description String?
-  status Status
-  priority Priority
+  status Status @default(TODO)
+  priority Priority @default(MEDIUM)
   projectId String
   position Int
   creatorId String
