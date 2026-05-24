@@ -33,3 +33,15 @@ export async function getByProject(
 
 	res.status(200).json(tasks);
 }
+
+type GetOneParams = {
+	taskId: string;
+};
+export async function getOne(req: Request<GetOneParams>, res: Response) {
+	const { taskId } = req.params;
+	const { id: userId } = req.user;
+
+	const task = await taskService.getOne(taskId, userId);
+
+	res.status(200).json(task);
+}

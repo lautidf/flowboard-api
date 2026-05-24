@@ -1,3 +1,4 @@
+import { NotFoundError } from '../../errors/errors';
 import { prisma } from '../../lib/prisma';
 import { requireMembership } from '../organizations/organization.helpers';
 import { getOrganizationId } from '../projects/project.helpers';
@@ -71,7 +72,31 @@ export async function getByProject(projectId: string, userId: string) {
 	return tasks;
 }
 
+export async function getOne(taskId: string, userId: string) {
+	const task = await prisma.task.findUnique({
+		where: {
+			id: taskId,
+			project: {
+				organization: {
+					memberships: {
+						some: {
+							userId
+						}
+					}
+				}
+			}
+		}
+	});
+
+	if (!task) {
+		throw new NotFoundError('Task not found');
+	}
+
+	return task;
+}
+
 export const taskService = {
 	create,
 	getByProject,
+	getOne,
 };
