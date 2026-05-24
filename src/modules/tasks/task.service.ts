@@ -60,6 +60,41 @@ export async function create({
 	return task;
 }
 
+export async function getByProject(projectId: string, userId: string) {
+	const project = await prisma.project.findUnique({
+		where: {
+			id: projectId
+		},
+		select: {
+			organizationId: true
+		}
+	});
+
+	if (!project) {
+		throw new NotFoundError('Project not found');
+	}
+
+	await requireMembership({
+		organizationId: project.organizationId,
+		userId
+	});
+	
+	const tasks = await prisma.task.findMany({
+		where: {
+			projectId
+		},
+		orderBy: {
+			position: 'asc'
+		},
+		omit: {
+			creatorId: true
+		}
+	});
+
+	return tasks;
+}
+
 export const taskService = {
 	create,
+	getByProject,
 };

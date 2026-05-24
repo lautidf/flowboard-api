@@ -18,3 +18,18 @@ export async function create(req: Request<CreateParams>, res: Response) {
 
 	res.status(201).json(task);
 }
+
+type GetByProjectParams = {
+	projectId: string;
+};
+export async function getByProject(
+	req: Request<GetByProjectParams>,
+	res: Response
+) {
+	const { projectId } = req.params;
+	const { id: userId } = req.user;
+
+	const tasks = await taskService.getByProject(projectId, userId);
+
+	res.status(200).json(tasks);
+}
