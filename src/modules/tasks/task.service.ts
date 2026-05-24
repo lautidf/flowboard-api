@@ -2,6 +2,7 @@ import { MembershipRole, Status } from '../../../generated/prisma/enums';
 import { NotFoundError } from '../../errors/errors';
 import { prisma } from '../../lib/prisma';
 import { requireMembership } from '../organizations/organization.helpers';
+import { getOrganizationId } from '../projects/project.helpers';
 
 type CreateInput = {
 	projectId: string;
@@ -15,21 +16,10 @@ export async function create({
 	description,
 	userId
 }: CreateInput) {
-	const project = await prisma.project.findUnique({
-		where: {
-			id: projectId
-		},
-		select: {
-			organizationId: true
-		}
-	});
-
-	if (!project) {
-		throw new NotFoundError('Project not found');
-	}
+	const organizationId = await getOrganizationId(projectId);
 
 	await requireMembership({
-		organizationId: project.organizationId,
+		organizationId,
 		userId
 	});
 
@@ -61,21 +51,10 @@ export async function create({
 }
 
 export async function getByProject(projectId: string, userId: string) {
-	const project = await prisma.project.findUnique({
-		where: {
-			id: projectId
-		},
-		select: {
-			organizationId: true
-		}
-	});
-
-	if (!project) {
-		throw new NotFoundError('Project not found');
-	}
+	const organizationId = await getOrganizationId(projectId);
 
 	await requireMembership({
-		organizationId: project.organizationId,
+		organizationId,
 		userId
 	});
 	
