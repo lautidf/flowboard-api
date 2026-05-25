@@ -1,4 +1,5 @@
-import { NotFoundError } from '../../errors/errors';
+import { MembershipRole, Priority, Status } from '../../../generated/prisma/enums';
+import { ForbiddenError, NotFoundError } from '../../errors/errors';
 import { prisma } from '../../lib/prisma';
 import { requireMembership } from '../organizations/organization.helpers';
 import { getOrganizationId } from '../projects/project.helpers';
@@ -95,8 +96,121 @@ export async function getOne(taskId: string, userId: string) {
 	return task;
 }
 
+type UpdateInput = {
+	taskId: string;
+	title?: string;
+	description?: string;
+	status?: Status;
+	priority?: Priority;
+	position?: number;
+	assigneeId?: string;
+	userId: string;
+};
+export async function update({
+	taskId,
+	title,
+	description,
+	status,
+	priority,
+	position,
+	assigneeId,
+	userId
+}: UpdateInput) {
+	const currentTask = await prisma.task.findUnique({
+		where: {
+			id: taskId,
+			project: {
+				organization: {
+					memberships: {
+						some: {
+							userId
+						}
+					}
+				}
+			}
+		},
+		select: {
+			assigneeId: true,
+			project: {
+				select: {
+					organization: {
+						select: {
+							memberships: {
+								where: {
+									userId
+								},
+								select: {
+									userId: true,
+									role: true
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	});
+
+	if (!currentTask) {
+		throw new NotFoundError('Task not found');
+	}
+
+	const { role } = currentTask.project.organization.memberships[0];
+	const { assigneeId: currentAssigneeId } = currentTask;
+
+	const isAdmin = role === MembershipRole.ADMIN;
+	const isAssignee = currentAssigneeId === userId;
+
+	const updatesAssigneeFields = (
+		title !== undefined ||
+		description !== undefined ||
+		status !== undefined
+	);
+
+	const updatesAdminFields = (
+		priority !== undefined ||
+		assigneeId !== undefined
+	);
+
+	if (updatesAssigneeFields) {
+		if (!isAdmin && !isAssignee) {
+			throw new ForbiddenError(
+				'Only admins or assignee can update a task\'s title, description or status'
+			);
+		}
+	}
+
+	if (updatesAdminFields) {
+		if (!isAdmin) {
+			throw new ForbiddenError(
+				'Only admins can update a task\'s priority or assignee'
+			);
+		}
+	}	
+	
+	const updatedTask = await prisma.task.update({
+		where: {
+			id: taskId,
+		},
+		data: {
+			title,
+			description,
+			status,
+			priority,
+			position,
+			assigneeId
+		},
+		omit: {
+			creatorId: true
+		}
+	});
+
+	return updatedTask;
+}
+
 export const taskService = {
 	create,
 	getByProject,
 	getOne,
+	update,
 };
