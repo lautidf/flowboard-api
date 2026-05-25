@@ -46,10 +46,10 @@ export async function getOne(req: Request<GetOneParams>, res: Response) {
 	res.status(200).json(task);
 }
 
-type EditParams = {
+type UpdateParams = {
 	taskId: string;
 };
-export async function update(req: Request<EditParams>, res: Response) {
+export async function update(req: Request<UpdateParams>, res: Response) {
 	const { taskId } = req.params;
 	const {
 		title,
