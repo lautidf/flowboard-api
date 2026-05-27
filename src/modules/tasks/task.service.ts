@@ -208,9 +208,61 @@ export async function update({
 	return updatedTask;
 }
 
+export async function remove(taskId: string, userId: string) {
+	const task = await prisma.task.findUnique({
+		where: {
+			id: taskId,
+			project: {
+				organization: {
+					memberships: {
+						some: {
+							userId
+						}
+					}
+				}
+			}
+		},
+		select: {
+			project: {
+				select: {
+					organization: {
+						select: {
+							memberships: {
+								where: {
+									userId
+								},
+								select: {
+									role: true
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	});
+
+	if (!task) {
+		throw new NotFoundError('Task not found');
+	}
+
+	const { role } = task.project.organization.memberships[0];
+
+	if (role !== MembershipRole.ADMIN) {
+		throw new ForbiddenError('Only admins can delete tasks');
+	}
+
+	await prisma.task.delete({
+		where: {
+			id: taskId
+		}
+	});
+}
+
 export const taskService = {
 	create,
 	getByProject,
 	getOne,
 	update,
+	delete: remove,
 };

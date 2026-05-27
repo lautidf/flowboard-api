@@ -74,3 +74,15 @@ export async function update(req: Request<UpdateParams>, res: Response) {
 
 	res.status(200).json(task);
 }
+
+type RemoveParams = {
+	taskId: string;
+};
+export async function remove(req: Request<RemoveParams>, res: Response) {
+	const { taskId } = req.params;
+	const { id: userId } = req.user;
+
+	await taskService.delete(taskId, userId);
+
+	res.status(204).send();
+}
