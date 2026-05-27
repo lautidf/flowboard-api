@@ -211,32 +211,12 @@ export async function update({
 export async function remove(taskId: string, userId: string) {
 	const task = await prisma.task.findUnique({
 		where: {
-			id: taskId,
-			project: {
-				organization: {
-					memberships: {
-						some: {
-							userId
-						}
-					}
-				}
-			}
+			id: taskId
 		},
 		select: {
 			project: {
 				select: {
-					organization: {
-						select: {
-							memberships: {
-								where: {
-									userId
-								},
-								select: {
-									role: true
-								}
-							}
-						}
-					}
+					organizationId: true
 				}
 			}
 		}
@@ -246,11 +226,13 @@ export async function remove(taskId: string, userId: string) {
 		throw new NotFoundError('Task not found');
 	}
 
-	const { role } = task.project.organization.memberships[0];
+	const { organizationId } = task.project;
 
-	if (role !== MembershipRole.ADMIN) {
-		throw new ForbiddenError('Only admins can delete tasks');
-	}
+	await requireMembership({
+		organizationId,
+		userId,
+		minimumRole: MembershipRole.ADMIN
+	});
 
 	await prisma.task.delete({
 		where: {
