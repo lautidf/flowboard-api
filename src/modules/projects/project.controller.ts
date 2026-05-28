@@ -41,9 +41,3 @@ export async function getOne(req: Request<GetOneParams>, res: Response) {
 
 	res.status(200).json(project);
 }
-
-export const projectController = {
-	create,
-	getByOrganization,
-	getOne,
-};
