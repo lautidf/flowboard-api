@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { taskService } from './task.service';
+import { Priority } from '../../../generated/prisma/enums';
 
 type CreateParams = {
 	projectId: string;
@@ -22,14 +23,30 @@ export async function create(req: Request<CreateParams>, res: Response) {
 type GetByProjectParams = {
 	projectId: string;
 };
+type GetByProjectQuery = {
+	priority?: Priority;
+	assignedToMe?: string;
+	unassigned?: string;
+};
 export async function getByProject(
-	req: Request<GetByProjectParams>,
+	req: Request<GetByProjectParams, {}, {}, GetByProjectQuery>,
 	res: Response
 ) {
 	const { projectId } = req.params;
+	const {
+		priority,
+		assignedToMe: assignedToMeStr,
+		unassigned: unassignedStr,
+	} = req.query;
 	const { id: userId } = req.user;
 
-	const tasks = await taskService.getByProject(projectId, userId);
+	const tasks = await taskService.getByProject({
+		projectId,
+		userId,
+		priority,
+		assignedToMe: assignedToMeStr === 'true',
+		unassigned: unassignedStr === 'true'
+	});
 
 	res.status(200).json(tasks);
 }

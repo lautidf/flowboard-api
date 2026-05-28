@@ -1,5 +1,5 @@
 import { MembershipRole, Priority, Status } from '../../../generated/prisma/enums';
-import { ForbiddenError, NotFoundError } from '../../errors/errors';
+import { ConflictError, ForbiddenError, NotFoundError } from '../../errors/errors';
 import { prisma } from '../../lib/prisma';
 import { requireMembership } from '../organizations/organization.helpers';
 import { getOrganizationId } from '../projects/project.helpers';
@@ -50,7 +50,26 @@ export async function create({
 	return task;
 }
 
-export async function getByProject(projectId: string, userId: string) {
+type GetByProjectInput = {
+	projectId: string;
+	userId: string;
+	priority?: Priority;
+	assignedToMe?: boolean;
+	unassigned?: boolean;
+};
+export async function getByProject({
+	projectId,
+	userId,
+	priority,
+	assignedToMe,
+	unassigned
+}: GetByProjectInput) {
+	if (assignedToMe && unassigned) {
+		throw new ConflictError(
+			'Cannot filter tasks by both assignedToMe and unassigned'
+		);
+	}
+	
 	const organizationId = await getOrganizationId(projectId);
 
 	await requireMembership({
@@ -60,7 +79,11 @@ export async function getByProject(projectId: string, userId: string) {
 	
 	const tasks = await prisma.task.findMany({
 		where: {
-			projectId
+			projectId,
+			priority,
+			assigneeId: assignedToMe
+				? userId
+				: unassigned ? null : undefined
 		},
 		orderBy: {
 			position: 'asc'
