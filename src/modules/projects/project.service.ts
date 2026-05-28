@@ -67,8 +67,33 @@ export async function getOne(id: string, userId: string) {
 	return project;
 }
 
+export async function remove(id: string, userId: string) {
+	const project = await prisma.project.findUnique({
+		where: {
+			id
+		}
+	});
+
+	if (!project) {
+		throw new NotFoundError('Project not found');
+	}
+
+	await requireMembership({
+		userId,
+		organizationId: project.organizationId,
+		minimumRole: MembershipRole.ADMIN
+	});
+
+	await prisma.project.delete({
+		where: {
+			id
+		},
+	});
+}
+
 export const projectService = {
 	create,
 	getByOrganization,
 	getOne,
+	delete: remove,
 };

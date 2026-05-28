@@ -41,3 +41,13 @@ export async function getOne(req: Request<GetOneParams>, res: Response) {
 
 	res.status(200).json(project);
 }
+
+type RemoveParams = { projectId: string };
+export async function remove(req: Request<RemoveParams>, res: Response) {
+	const { projectId } = req.params;
+	const userId = req.user.id;
+
+	await projectService.delete(projectId, userId);
+
+	res.status(204).send();
+}
