@@ -49,20 +49,18 @@ export async function getByOrganization(
 export async function getOne(id: string, userId: string) {
 	const project = await prisma.project.findUnique({
 		where: {
-			id,
-			organization: {
-				memberships: {
-					some: {
-						userId,
-					},
-				},
-			},
+			id
 		},
 	});
 	
 	if (!project) {
 		throw new NotFoundError('Project not found');
 	}
+
+	await requireMembership({
+		userId,
+		organizationId: project.organizationId,
+	});
 
 	return project;
 }
