@@ -99,14 +99,12 @@ export async function getByProject({
 export async function getOne(taskId: string, userId: string) {
 	const task = await prisma.task.findUnique({
 		where: {
-			id: taskId,
+			id: taskId
+		},
+		include: {
 			project: {
-				organization: {
-					memberships: {
-						some: {
-							userId
-						}
-					}
+				select: {
+					organizationId: true
 				}
 			}
 		}
@@ -116,7 +114,14 @@ export async function getOne(taskId: string, userId: string) {
 		throw new NotFoundError('Task not found');
 	}
 
-	return task;
+	await requireMembership({
+		organizationId: task.project.organizationId,
+		userId
+	});
+
+	const { project, ...taskWithoutProject } = task;
+
+	return taskWithoutProject;
 }
 
 type UpdateInput = {
