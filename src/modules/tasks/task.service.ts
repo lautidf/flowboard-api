@@ -141,16 +141,7 @@ export async function update({
 }: UpdateInput) {
 	const currentTask = await prisma.task.findUnique({
 		where: {
-			id: taskId,
-			project: {
-				organization: {
-					memberships: {
-						some: {
-							userId
-						}
-					}
-				}
-			}
+			id: taskId
 		},
 		select: {
 			assigneeId: true,
@@ -158,6 +149,7 @@ export async function update({
 				select: {
 					organization: {
 						select: {
+							id: true,
 							memberships: {
 								where: {
 									userId
@@ -177,6 +169,11 @@ export async function update({
 	if (!currentTask) {
 		throw new NotFoundError('Task not found');
 	}
+
+	await requireMembership({
+		organizationId: currentTask.project.organization.id,
+		userId
+	});
 
 	const { role } = currentTask.project.organization.memberships[0];
 	const { assigneeId: currentAssigneeId } = currentTask;
