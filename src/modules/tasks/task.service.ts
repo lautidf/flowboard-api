@@ -154,13 +154,11 @@ export async function update({
 				select: {
 					organization: {
 						select: {
-							id: true,
 							memberships: {
 								where: {
 									userId
 								},
 								select: {
-									userId: true,
 									role: true
 								}
 							}
@@ -175,12 +173,13 @@ export async function update({
 		throw new NotFoundError('Task not found');
 	}
 
-	await requireMembership({
-		organizationId: currentTask.project.organization.id,
-		userId
-	});
+	const [ membership ] = currentTask.project.organization.memberships;
 
-	const { role } = currentTask.project.organization.memberships[0];
+	if (!membership) {
+		throw new ForbiddenError('User is not a member of the organization')
+	}
+
+	const { role } = membership;
 	const { assigneeId: currentAssigneeId } = currentTask;
 
 	const isAdmin = role === MembershipRole.ADMIN;
