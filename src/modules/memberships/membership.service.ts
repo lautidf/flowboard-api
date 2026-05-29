@@ -3,6 +3,7 @@ import { PrismaClientKnownRequestError } from '../../../generated/prisma/interna
 import { ConflictError, NotFoundError } from '../../errors/errors';
 import { prisma } from '../../lib/prisma';
 import { requireMembership, requireOrganizationExists } from '../organizations/organization.helpers';
+import { getAdminCount, getMembership } from './membership.helpers';
 
 type UpdateInput = {
 	organizationId: string;
@@ -13,7 +14,7 @@ type UpdateInput = {
 export async function update({
 	organizationId,
 	memberId,
-	role,
+	role: updatedRole,
 	userId
 }: UpdateInput) {
 	await requireOrganizationExists(organizationId);
@@ -23,17 +24,21 @@ export async function update({
 		minimumRole: MembershipRole.ADMIN
 	});
 
-	const adminCount = await prisma.membership.count({
-		where: {
-			organizationId,
-			role: MembershipRole.ADMIN
-		}
-	})
+	const currentMembership = await getMembership(organizationId, memberId);
+	const currentRole = currentMembership.role;
 
-	if (role !== MembershipRole.ADMIN && adminCount < 2) {
-		throw new ConflictError(
-			'Last admin of the organization cannot be demoted'
-		);
+	if (updatedRole === currentRole) {
+		return currentMembership;
+	}
+
+	if (currentRole === MembershipRole.ADMIN) {
+		const adminCount = await getAdminCount(organizationId);
+			
+		if (adminCount <= 1) {
+			throw new ConflictError(
+				'The last admin in the organization cannot be demoted'
+			);
+		}
 	}
 
 	try {
@@ -45,7 +50,7 @@ export async function update({
 				}
 			},
 			data: {
-				role
+				role: updatedRole
 			}
 		});
 
@@ -95,33 +100,14 @@ export async function remove({
 		minimumRole: MembershipRole.ADMIN
 	});
 
-	const membership = await prisma.membership.findUnique({
-		where: {
-			userId_organizationId: {
-				userId: memberId,
-				organizationId
-			}
-		},
-		select: {
-			role: true
-		}
-	});
+	const { role } = await getMembership(organizationId, memberId);
 
-	if (!membership) {
-		throw new NotFoundError('Membership not found');
-	}
-
-	if (membership.role === MembershipRole.ADMIN) {
-		const adminCount = await prisma.membership.count({
-			where: {
-				organizationId,
-				role: MembershipRole.ADMIN
-			}
-		});
-	
-		if (adminCount < 2) {
+	if (role === MembershipRole.ADMIN) {
+		const adminCount = await getAdminCount(organizationId);
+			
+		if (adminCount <= 1) {
 			throw new ConflictError(
-				'Last admin of the organization cannot be removed'
+				'The last admin in the organization cannot be removed'
 			);
 		}
 	}
