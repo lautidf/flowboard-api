@@ -6,6 +6,7 @@ import { projectRoutes } from './modules/projects/project.routes';
 import { authRoutes } from './modules/auth/auth.routes';
 import { invitationRoutes } from './modules/invitations/invitation.routes';
 import { taskRoutes } from './modules/tasks/task.routes';
+import { membershipRoutes } from './modules/memberships/membership.routes';
 
 export const app = express();
 
@@ -23,5 +24,6 @@ app.use('/organizations', organizationRoutes);
 app.use('/', projectRoutes);
 app.use('/', invitationRoutes);
 app.use('/', taskRoutes);
+app.use('/', membershipRoutes);
 
 app.use(errorHandler);
