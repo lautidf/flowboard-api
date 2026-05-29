@@ -37,3 +37,20 @@ export async function getByOrganization(
 
 	res.status(200).json(memberships);
 }
+
+type RemoveParams = {
+	organizationId: string;
+	userId: string;
+}
+export async function remove(req: Request<RemoveParams>, res: Response) {
+	const { organizationId, userId: memberId } = req.params;
+	const { id: userId } = req.user;
+
+	await membershipService.delete({
+		organizationId,
+		memberId,
+		userId
+	});
+
+	res.status(204).send();
+}
