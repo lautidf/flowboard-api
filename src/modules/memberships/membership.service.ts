@@ -49,6 +49,24 @@ export async function update({
 	}
 }
 
+async function getByOrganization(organizationId: string, userId: string) {
+	await requireOrganizationExists(organizationId);
+	await requireMembership({
+		userId,
+		organizationId,
+		minimumRole: MembershipRole.ADMIN
+	});
+
+	const memberships = await prisma.membership.findMany({
+		where: {
+			organizationId
+		}
+	});
+
+	return memberships;
+}
+
 export const membershipService = {
 	update,
+	getByOrganization,
 };

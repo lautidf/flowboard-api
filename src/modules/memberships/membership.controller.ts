@@ -19,3 +19,21 @@ export async function update(req: Request<UpdateParams>, res: Response) {
 
 	res.status(200).json(membership);
 }
+
+type GetByOrganizationParams = {
+	organizationId: string;
+}
+export async function getByOrganization(
+	req: Request<GetByOrganizationParams>,
+	res: Response
+) {
+	const { organizationId } = req.params;
+	const { id: userId } = req.user;
+
+	const memberships = await membershipService.getByOrganization(
+		organizationId,
+		userId
+	);
+
+	res.status(200).json(memberships);
+}
