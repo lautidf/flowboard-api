@@ -1,6 +1,6 @@
 import { MembershipRole } from '../../../generated/prisma/enums';
 import { PrismaClientKnownRequestError } from '../../../generated/prisma/internal/prismaNamespace';
-import { NotFoundError } from '../../errors/errors';
+import { ConflictError, NotFoundError } from '../../errors/errors';
 import { prisma } from '../../lib/prisma';
 import { requireMembership, requireOrganizationExists } from '../organizations/organization.helpers';
 
@@ -21,7 +21,18 @@ export async function update({
 		userId,
 		organizationId,
 		minimumRole: MembershipRole.ADMIN
-	});
+	});	
+
+	const adminCount = await prisma.membership.count({
+		where: {
+			organizationId,
+			role: MembershipRole.ADMIN
+		}
+	})
+
+	if (role !== MembershipRole.ADMIN && adminCount < 2) {
+		throw new ConflictError('Last admin of the organization cannot be demoted')
+	}
 
 	try {
 		const membership = prisma.membership.update({
