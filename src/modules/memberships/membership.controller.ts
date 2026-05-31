@@ -54,3 +54,15 @@ export async function remove(req: Request<RemoveParams>, res: Response) {
 
 	res.status(204).send();
 }
+
+type LeaveParams = {
+	organizationId: string
+}
+export async function leave(req: Request<LeaveParams>, res: Response) {
+	const { organizationId } = req.params;
+	const { id: userId } = req.user;
+
+	await membershipService.leave(organizationId, userId);
+
+	res.status(204).send();;
+}

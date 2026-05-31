@@ -3,6 +3,7 @@ import { PrismaClientKnownRequestError } from '../../../generated/prisma/interna
 import { ConflictError, NotFoundError } from '../../errors/errors';
 import { prisma } from '../../lib/prisma';
 import { requireMembership, requireOrganizationExists } from '../organizations/organization.helpers';
+import { organizationRoutes } from '../organizations/organization.routes';
 import { getAdminCount, getMembership } from './membership.helpers';
 
 type UpdateInput = {
@@ -83,6 +84,7 @@ export async function getByOrganization(organizationId: string, userId: string) 
 
 	return memberships;
 }
+
 type RemoveInput = {
 	organizationId: string;
 	memberId: string;
@@ -112,18 +114,67 @@ export async function remove({
 		}
 	}
 
-	await prisma.membership.delete({
-		where: {
-			userId_organizationId: {
-				userId: memberId,
-				organizationId
+	try {
+		await prisma.membership.delete({
+			where: {
+				userId_organizationId: {
+					userId: memberId,
+					organizationId
+				}
 			}
+		});
+	} catch (error) {
+		if (
+			error instanceof PrismaClientKnownRequestError &&
+			error.code === 'P2025'
+		) {
+			throw new NotFoundError('Membership not found');
 		}
-	});
+
+		throw error;
+	}
+}
+
+export async function leave(organizationId: string, userId: string) {
+	await requireOrganizationExists(organizationId);
+	await requireMembership({ userId, organizationId });
+
+	const { role } = await getMembership(organizationId, userId);
+
+	if (role === MembershipRole.ADMIN) {
+		const adminCount = await getAdminCount(organizationId);
+			
+		if (adminCount <= 1) {
+			throw new ConflictError(
+				'The last admin in the organization cannot leave'
+			);
+		}
+	}
+
+	try {
+		await prisma.membership.delete({
+			where: {
+				userId_organizationId: {
+					userId,
+					organizationId
+				}
+			}
+		});
+	} catch (error) {
+		if (
+			error instanceof PrismaClientKnownRequestError &&
+			error.code === 'P2025'
+		) {
+			throw new NotFoundError('Membership not found');
+		}
+
+		throw error;
+	}
 }
 
 export const membershipService = {
 	update,
 	getByOrganization,
 	delete: remove,
+	leave,
 };
