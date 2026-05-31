@@ -3,7 +3,6 @@ import { PrismaClientKnownRequestError } from '../../../generated/prisma/interna
 import { ConflictError, NotFoundError } from '../../errors/errors';
 import { prisma } from '../../lib/prisma';
 import { requireMembership, requireOrganizationExists } from '../organizations/organization.helpers';
-import { organizationRoutes } from '../organizations/organization.routes';
 
 type UpdateInput = {
 	organizationId: string;
