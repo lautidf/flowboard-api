@@ -4,7 +4,6 @@ import { ConflictError, NotFoundError } from '../../errors/errors';
 import { prisma } from '../../lib/prisma';
 import { requireMembership, requireOrganizationExists } from '../organizations/organization.helpers';
 import { organizationRoutes } from '../organizations/organization.routes';
-import { getMembership } from './membership.helpers';
 
 type UpdateInput = {
 	organizationId: string;
@@ -24,8 +23,20 @@ export async function update({
 		organizationId,
 		minimumRole: MembershipRole.ADMIN
 	});
+		
+	const currentMembership = await prisma.membership.findUnique({
+		where: {
+			userId_organizationId: {
+				userId: memberId,
+				organizationId
+			}
+		}
+	});
 
-	const currentMembership = await getMembership(organizationId, memberId);
+	if (!currentMembership) {
+		throw new NotFoundError('Membership not found');
+	}
+
 	const currentRole = currentMembership.role;
 
 	if (updatedRole === currentRole) {
@@ -98,9 +109,20 @@ export async function remove({
 		minimumRole: MembershipRole.ADMIN
 	});
 
-	const { role } = await getMembership(organizationId, memberId);
+	const membership = await prisma.membership.findUnique({
+		where: {
+			userId_organizationId: {
+				userId: memberId,
+				organizationId
+			}
+		}
+	});
+	
+	if (!membership) {
+		throw new NotFoundError('Membership not found');
+	}
 
-	if (await wouldLeaveNoAdmins(role, organizationId)) {
+	if (await wouldLeaveNoAdmins(membership.role, organizationId)) {
 		throw new ConflictError(
 			'The last admin in the organization cannot be removed'
 		);		
@@ -131,9 +153,20 @@ export async function leave(organizationId: string, userId: string) {
 	await requireOrganizationExists(organizationId);
 	await requireMembership({ userId, organizationId });
 
-	const { role } = await getMembership(organizationId, userId);
+	const membership = await prisma.membership.findUnique({
+		where: {
+			userId_organizationId: {
+				userId,
+				organizationId
+			}
+		}
+	});
+	
+	if (!membership) {
+		throw new NotFoundError('Membership not found');
+	}
 
-	if (await wouldLeaveNoAdmins(role, organizationId)) {
+	if (await wouldLeaveNoAdmins(membership.role, organizationId)) {
 		throw new ConflictError(
 			'The last admin in the organization cannot leave'
 		);
