@@ -18,14 +18,3 @@ export async function getMembership(organizationId: string, userId: string) {
 
 	return membership;
 }
-
-export async function getAdminCount(organizationId: string) {
-	const adminCount = await prisma.membership.count({
-		where: {
-			organizationId,
-			role: MembershipRole.ADMIN
-		}
-	});
-
-	return adminCount;
-}

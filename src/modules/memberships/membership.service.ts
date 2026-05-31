@@ -4,7 +4,7 @@ import { ConflictError, NotFoundError } from '../../errors/errors';
 import { prisma } from '../../lib/prisma';
 import { requireMembership, requireOrganizationExists } from '../organizations/organization.helpers';
 import { organizationRoutes } from '../organizations/organization.routes';
-import { getAdminCount, getMembership } from './membership.helpers';
+import { getMembership } from './membership.helpers';
 
 type UpdateInput = {
 	organizationId: string;
@@ -32,14 +32,10 @@ export async function update({
 		return currentMembership;
 	}
 
-	if (currentRole === MembershipRole.ADMIN) {
-		const adminCount = await getAdminCount(organizationId);
-			
-		if (adminCount <= 1) {
+	if (await wouldLeaveNoAdmins(currentRole, organizationId)) {
 			throw new ConflictError(
 				'The last admin in the organization cannot be demoted'
 			);
-		}
 	}
 
 	try {
@@ -104,14 +100,10 @@ export async function remove({
 
 	const { role } = await getMembership(organizationId, memberId);
 
-	if (role === MembershipRole.ADMIN) {
-		const adminCount = await getAdminCount(organizationId);
-			
-		if (adminCount <= 1) {
-			throw new ConflictError(
-				'The last admin in the organization cannot be removed'
-			);
-		}
+	if (await wouldLeaveNoAdmins(role, organizationId)) {
+		throw new ConflictError(
+			'The last admin in the organization cannot be removed'
+		);		
 	}
 
 	try {
@@ -141,14 +133,10 @@ export async function leave(organizationId: string, userId: string) {
 
 	const { role } = await getMembership(organizationId, userId);
 
-	if (role === MembershipRole.ADMIN) {
-		const adminCount = await getAdminCount(organizationId);
-			
-		if (adminCount <= 1) {
-			throw new ConflictError(
-				'The last admin in the organization cannot leave'
-			);
-		}
+	if (await wouldLeaveNoAdmins(role, organizationId)) {
+		throw new ConflictError(
+			'The last admin in the organization cannot leave'
+		);
 	}
 
 	try {
@@ -178,3 +166,20 @@ export const membershipService = {
 	delete: remove,
 	leave,
 };
+
+async function wouldLeaveNoAdmins(
+	role: MembershipRole,
+	organizationId: string
+) {
+	if (role === MembershipRole.ADMIN) {
+		const adminCount = await prisma.membership.count({
+			where: {
+				organizationId,
+				role: MembershipRole.ADMIN
+			}
+		});
+			
+		return adminCount <= 1;
+	}
+	return false;
+}
