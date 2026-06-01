@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
 import { invitationService } from './invitation.service';
 
-type SendInvitationParams = {
+type SendParams = {
 	organizationId: string;
 };
 export async function send(
-	req: Request<SendInvitationParams>,
+	req: Request<SendParams>,
 	res: Response
 ) {
 	const { organizationId } = req.params;
