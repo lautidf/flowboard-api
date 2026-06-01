@@ -43,13 +43,13 @@ export async function update({
 	}
 
 	if (await wouldLeaveNoAdmins(currentRole, organizationId)) {
-			throw new ConflictError(
-				'The last admin in the organization cannot be demoted'
-			);
+		throw new ConflictError(
+			'The last admin in the organization cannot be demoted'
+		);
 	}
 
 	try {
-		const membership = prisma.membership.update({
+		const membership = await prisma.membership.update({
 			where: {
 				userId_organizationId: {
 					userId: memberId,
