@@ -8,7 +8,7 @@ type UpdateParams = {
 export async function update(req: Request<UpdateParams>, res: Response) {
 	const { organizationId, userId: memberId } = req.params;
 	const { role } = req.body;
-	const { id: userId } = req.user;
+	const userId = req.user.id;
 
 	const membership = await membershipService.update({
 		organizationId,
@@ -28,7 +28,7 @@ export async function getByOrganization(
 	res: Response
 ) {
 	const { organizationId } = req.params;
-	const { id: userId } = req.user;
+	const userId = req.user.id;
 
 	const memberships = await membershipService.getByOrganization(
 		organizationId,
@@ -44,7 +44,7 @@ type RemoveParams = {
 }
 export async function remove(req: Request<RemoveParams>, res: Response) {
 	const { organizationId, userId: memberId } = req.params;
-	const { id: userId } = req.user;
+	const userId = req.user.id;
 
 	await membershipService.delete({
 		organizationId,
@@ -60,7 +60,7 @@ type LeaveParams = {
 }
 export async function leave(req: Request<LeaveParams>, res: Response) {
 	const { organizationId } = req.params;
-	const { id: userId } = req.user;
+	const userId = req.user.id;
 
 	await membershipService.leave(organizationId, userId);
 

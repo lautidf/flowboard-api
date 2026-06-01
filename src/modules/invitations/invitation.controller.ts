@@ -30,7 +30,7 @@ export async function getByOrganization(
 	res: Response
 ) {
 	const { organizationId } = req.params;
-	const { id: userId } = req.user;
+	const userId = req.user.id;
 
 	const invitations = await invitationService.getByOrganization(
 		organizationId,
@@ -61,7 +61,7 @@ export async function remove(
 }
 
 export async function getForUser(req: Request, res: Response) {
-	const { id: userId } = req.user;
+	const userId = req.user.id;
 
 	const invitations = await invitationService.getForUser(userId);
 
@@ -70,7 +70,7 @@ export async function getForUser(req: Request, res: Response) {
 
 export async function reject(req: Request, res: Response) {
 	const { organizationId } = req.body;
-	const { id: userId } = req.user;
+	const userId = req.user.id;
 
 	await invitationService.reject(userId, organizationId);
 
@@ -79,7 +79,7 @@ export async function reject(req: Request, res: Response) {
 
 export async function accept(req: Request, res: Response) {
 	const { organizationId } = req.body;
-	const { id: userId } = req.user;
+	const userId = req.user.id;
 
 	await invitationService.accept(userId, organizationId);
 

@@ -8,7 +8,7 @@ type CreateParams = {
 export async function create(req: Request<CreateParams>, res: Response) {
 	const { projectId } = req.params;
 	const { title, description } = req.body;
-	const { id: userId } = req.user;
+	const userId = req.user.id;
 
 	const task = await taskService.create({
 		projectId,
@@ -38,7 +38,7 @@ export async function getByProject(
 		assignedToMe: assignedToMeStr,
 		unassigned: unassignedStr,
 	} = req.query;
-	const { id: userId } = req.user;
+	const userId = req.user.id;
 
 	const tasks = await taskService.getByProject({
 		projectId,
@@ -56,7 +56,7 @@ type GetOneParams = {
 };
 export async function getOne(req: Request<GetOneParams>, res: Response) {
 	const { taskId } = req.params;
-	const { id: userId } = req.user;
+	const userId = req.user.id;
 
 	const task = await taskService.getOne(taskId, userId);
 
@@ -76,7 +76,7 @@ export async function update(req: Request<UpdateParams>, res: Response) {
 		position,
 		assigneeId,
 	} = req.body;
-	const { id: userId } = req.user;
+	const userId = req.user.id;
 
 	const task = await taskService.update({
 		taskId,
@@ -97,7 +97,7 @@ type RemoveParams = {
 };
 export async function remove(req: Request<RemoveParams>, res: Response) {
 	const { taskId } = req.params;
-	const { id: userId } = req.user;
+	const userId = req.user.id;
 
 	await taskService.delete(taskId, userId);
 
