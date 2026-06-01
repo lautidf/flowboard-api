@@ -4,11 +4,11 @@ import { ConflictError, NotFoundError } from '../../errors/errors';
 import { prisma } from '../../lib/prisma';
 import { requireMembership, requireOrganizationExists } from './organization.helpers';
 
-type CreateOrganizationInput = {
+type CreateInput = {
 	name: string;
 	userId: string;
 };
-export async function create({ name, userId }: CreateOrganizationInput) {
+export async function create({ name, userId }: CreateInput) {
 	try {
 		const organization = await prisma.organization.create({
 			data: {
@@ -39,12 +39,17 @@ export async function create({ name, userId }: CreateOrganizationInput) {
 	}
 };
 
-export async function getAll(userId: string) {
+type GetAllInput = {
+	userId: string;
+	role?: MembershipRole;
+};
+export async function getAll({ userId, role }: GetAllInput) {
 	const organizations = await prisma.organization.findMany({
 		where: {
 			memberships: {
 				some: {
 					userId,
+					role,
 				},
 			},
 		},

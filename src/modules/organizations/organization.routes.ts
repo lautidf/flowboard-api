@@ -6,6 +6,6 @@ const router = Router();
 router.post('/', create);
 router.get('/', getAll);
 router.get('/:organizationId', getOne);
-router.delete('/:organizationId', remove)
+router.delete('/:organizationId', remove);
 
 export const organizationRoutes = router;

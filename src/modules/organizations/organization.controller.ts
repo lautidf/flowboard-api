@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { organizationService } from './organization.service';
+import { MembershipRole } from '../../../generated/prisma/enums';
 
 export async function create(req: Request, res: Response) {
 	const { name } = req.body;
@@ -10,10 +11,17 @@ export async function create(req: Request, res: Response) {
 	res.status(201).json(organization);
 };
 
-export async function getAll(req: Request, res: Response) {
+type GetAllQuery = {
+	role?: MembershipRole;
+};
+export async function getAll(req: Request<{}, {}, {}, GetAllQuery>, res: Response) {
 	const userId = req.user.id;
-	
-	const organizations = await organizationService.getAll(userId);
+	const { role } = req.query;
+
+	const organizations = await organizationService.getAll({
+		userId,
+		role
+	});
 
 	res.json(organizations);
 }
