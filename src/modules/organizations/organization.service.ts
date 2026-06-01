@@ -2,6 +2,7 @@ import { MembershipRole } from '../../../generated/prisma/enums';
 import { PrismaClientKnownRequestError } from '../../../generated/prisma/internal/prismaNamespace';
 import { ConflictError, NotFoundError } from '../../errors/errors';
 import { prisma } from '../../lib/prisma';
+import { requireMembership, requireOrganizationExists } from './organization.helpers';
 
 type CreateOrganizationInput = {
 	name: string;
@@ -85,8 +86,24 @@ export async function getOne(id: string, userId: string) {
 	return organization;
 }
 
+export async function remove(id: string, userId: string) {
+	await requireOrganizationExists(id);
+	await requireMembership({
+		userId,
+		organizationId: id,
+		minimumRole: MembershipRole.ADMIN
+	});
+
+	await prisma.organization.delete({
+		where: {
+			id
+		}
+	});
+}
+
 export const organizationService = {
 	create,
 	getAll,
 	getOne,
+	delete: remove,
 };

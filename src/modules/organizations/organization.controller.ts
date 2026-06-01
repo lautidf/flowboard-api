@@ -27,3 +27,13 @@ export async function getOne(req: Request<GetOneParams>, res: Response) {
 
 	res.json(organization);
 }
+
+type RemoveParams = { organizationId: string };
+export async function remove(req: Request<RemoveParams>, res: Response) {
+	const { organizationId } = req.params;
+	const { id: userId} = req.user;
+
+	await organizationService.delete(organizationId, userId);
+
+	res.status(204).send();
+}
