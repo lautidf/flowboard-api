@@ -10,7 +10,7 @@ export async function send(
 ) {
 	const { organizationId } = req.params;
 	const { email, role } = req.body;
-	const { id: senderId } = req.user;
+	const senderId = req.user.id;
 
 	await invitationService.create({
 		organizationId,
