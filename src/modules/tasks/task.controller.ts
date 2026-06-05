@@ -1,13 +1,16 @@
 import { Request, Response } from 'express';
 import { taskService } from './task.service';
 import { Priority } from '../../../generated/prisma/enums';
+import { createRequestSchema, getByProjectRequestSchema, getOneRequestSchema, removeRequestSchema, updateRequestSchema } from './task.schemas';
 
-type CreateParams = {
-	projectId: string;
-};
-export async function create(req: Request<CreateParams>, res: Response) {
-	const { projectId } = req.params;
-	const { title, description } = req.body;
+export async function create(req: Request, res: Response) {
+	const { params, body } = createRequestSchema.parse({
+		params: req.params,
+		body: req.body
+	});
+
+	const { projectId } = params;
+	const { title, description } = body;
 	const userId = req.user.id;
 
 	const task = await taskService.create({
@@ -20,42 +23,37 @@ export async function create(req: Request<CreateParams>, res: Response) {
 	res.status(201).json(task);
 }
 
-type GetByProjectParams = {
-	projectId: string;
-};
-type GetByProjectQuery = {
-	priority?: Priority;
-	assignedToMe?: string;
-	unassigned?: string;
-};
-export async function getByProject(
-	req: Request<GetByProjectParams, {}, {}, GetByProjectQuery>,
-	res: Response
-) {
-	const { projectId } = req.params;
+export async function getByProject(req: Request, res: Response) {
+	const { params, query } = getByProjectRequestSchema.parse({
+		params: req.params,
+		query: req.query
+	});
+
+	const { projectId } = params;
 	const {
 		priority,
-		assignedToMe: assignedToMeStr,
-		unassigned: unassignedStr,
-	} = req.query;
+		assignedToMe,
+		unassigned,
+	} = query;
 	const userId = req.user.id;
 
 	const tasks = await taskService.getByProject({
 		projectId,
 		userId,
 		priority,
-		assignedToMe: assignedToMeStr === 'true',
-		unassigned: unassignedStr === 'true'
+		assignedToMe,
+		unassigned
 	});
 
 	res.status(200).json(tasks);
 }
 
-type GetOneParams = {
-	taskId: string;
-};
-export async function getOne(req: Request<GetOneParams>, res: Response) {
-	const { taskId } = req.params;
+export async function getOne(req: Request, res: Response) {
+	const { params } = getOneRequestSchema.parse({
+		params: req.params
+	});
+
+	const { taskId } = params;
 	const userId = req.user.id;
 
 	const task = await taskService.getOne(taskId, userId);
@@ -63,11 +61,13 @@ export async function getOne(req: Request<GetOneParams>, res: Response) {
 	res.status(200).json(task);
 }
 
-type UpdateParams = {
-	taskId: string;
-};
-export async function update(req: Request<UpdateParams>, res: Response) {
-	const { taskId } = req.params;
+export async function update(req: Request, res: Response) {
+	const { params, body } = updateRequestSchema.parse({
+		params: req.params,
+		body: req.body
+	});
+
+	const { taskId } = params;
 	const {
 		title,
 		description,
@@ -75,7 +75,7 @@ export async function update(req: Request<UpdateParams>, res: Response) {
 		priority,
 		position,
 		assigneeId,
-	} = req.body;
+	} = body;
 	const userId = req.user.id;
 
 	const task = await taskService.update({
@@ -92,11 +92,12 @@ export async function update(req: Request<UpdateParams>, res: Response) {
 	res.status(200).json(task);
 }
 
-type RemoveParams = {
-	taskId: string;
-};
-export async function remove(req: Request<RemoveParams>, res: Response) {
-	const { taskId } = req.params;
+export async function remove(req: Request, res: Response) {
+	const { params } = removeRequestSchema.parse({
+		params: req.params
+	});
+
+	const { taskId } = params;
 	const userId = req.user.id;
 
 	await taskService.delete(taskId, userId);
