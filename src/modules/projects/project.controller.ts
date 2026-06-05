@@ -1,10 +1,15 @@
 import { Request, Response } from 'express';
 import { projectService } from './project.service';
+import { createRequestSchema } from './project.schemas';
 
-type CreateParams = { organizationId: string };
-export async function create(req: Request<CreateParams>, res: Response) {
-	const { organizationId } = req.params;
-	const { name } = req.body;
+export async function create(req: Request, res: Response) {
+	const { params, body } = createRequestSchema.parse({
+		params: req.params,
+		body: req.body
+	});
+
+	const { organizationId } = params;
+	const { name } = body;
 	const userId = req.user.id;
 
 	const project = await projectService.create({
