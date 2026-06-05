@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { projectService } from './project.service';
-import { createRequestSchema } from './project.schemas';
+import { createRequestSchema, getByOrganizationRequestSchema, getOneRequestSchema, removeRequestSchema } from './project.schemas';
 
 export async function create(req: Request, res: Response) {
 	const { params, body } = createRequestSchema.parse({
@@ -21,12 +21,12 @@ export async function create(req: Request, res: Response) {
 	res.status(201).json(project);
 }
 
-type GetByOrganizationParams = { organizationId: string };
-export async function getByOrganization(
-	req: Request<GetByOrganizationParams>,
-	res: Response
-) {
-	const { organizationId } = req.params;
+export async function getByOrganization(req: Request, res: Response) {
+	const { params } = getByOrganizationRequestSchema.parse({
+		params: req.params
+	});
+	
+	const { organizationId } = params;
 	const userId = req.user.id;
 
 	const projects = await projectService.getByOrganization(
@@ -37,9 +37,12 @@ export async function getByOrganization(
 	res.status(200).json(projects);
 }
 
-type GetOneParams = {	projectId: string };
-export async function getOne(req: Request<GetOneParams>, res: Response) {
-	const { projectId } = req.params;
+export async function getOne(req: Request, res: Response) {
+	const { params } = getOneRequestSchema.parse({
+		params: req.params
+	});
+
+	const { projectId } = params;
 	const userId = req.user.id;
 
 	const project = await projectService.getOne(projectId, userId);
@@ -47,9 +50,12 @@ export async function getOne(req: Request<GetOneParams>, res: Response) {
 	res.status(200).json(project);
 }
 
-type RemoveParams = { projectId: string };
-export async function remove(req: Request<RemoveParams>, res: Response) {
-	const { projectId } = req.params;
+export async function remove(req: Request, res: Response) {
+	const { params } = removeRequestSchema.parse({
+		params: req.params
+	});
+
+	const { projectId } = params;
 	const userId = req.user.id;
 
 	await projectService.delete(projectId, userId);
