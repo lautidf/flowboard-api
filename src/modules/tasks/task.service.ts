@@ -7,7 +7,7 @@ import { getOrganizationId } from '../projects/project.helpers';
 type CreateInput = {
 	projectId: string;
 	title: string;
-	description?: string;
+	description?: string | null;
 	userId: string;
 };
 export async function create({
@@ -127,7 +127,7 @@ export async function getOne(taskId: string, userId: string) {
 type UpdateInput = {
 	taskId: string;
 	title?: string;
-	description?: string;
+	description?: string | null;
 	status?: Status;
 	priority?: Priority;
 	position?: number;
