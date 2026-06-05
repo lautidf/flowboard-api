@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { taskService } from './task.service';
-import { Priority } from '../../../generated/prisma/enums';
 import { createRequestSchema, getByProjectRequestSchema, getOneRequestSchema, removeRequestSchema, updateRequestSchema } from './task.schemas';
 
 export async function create(req: Request, res: Response) {
