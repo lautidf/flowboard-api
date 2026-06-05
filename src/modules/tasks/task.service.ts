@@ -131,7 +131,7 @@ type UpdateInput = {
 	status?: Status;
 	priority?: Priority;
 	position?: number;
-	assigneeId?: string;
+	assigneeId?: string | null;
 	userId: string;
 };
 export async function update({
