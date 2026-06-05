@@ -7,7 +7,7 @@ import { getOrganizationId } from '../projects/project.helpers';
 type CreateInput = {
 	projectId: string;
 	title: string;
-	description: string;
+	description?: string;
 	userId: string;
 };
 export async function create({
