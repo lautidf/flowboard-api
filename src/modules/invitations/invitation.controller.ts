@@ -1,15 +1,21 @@
 import { Request, Response } from 'express';
 import { invitationService } from './invitation.service';
+import {
+	acceptRequestSchema,
+	getByOrganizationRequestSchema,
+	rejectRequestSchema,
+	sendRequestSchema,
+	removeRequestSchema
+} from './invitation.schemas';
 
-type SendParams = {
-	organizationId: string;
-};
-export async function send(
-	req: Request<SendParams>,
-	res: Response
-) {
-	const { organizationId } = req.params;
-	const { email, role } = req.body;
+export async function send(req: Request, res: Response) {
+	const { params, body } = sendRequestSchema.parse({
+		params: req.params,
+		body: req.body
+	});
+	
+	const { organizationId } = params;
+	const { email, role } = body;
 	const senderId = req.user.id;
 
 	await invitationService.create({
@@ -22,14 +28,12 @@ export async function send(
 	res.status(201).json({ message: 'Invitation sent successfully' });
 }
 
-type GetByOrganizationParams = {
-	organizationId: string;
-};
-export async function getByOrganization(
-	req: Request<GetByOrganizationParams>,
-	res: Response
-) {
-	const { organizationId } = req.params;
+export async function getByOrganization(req: Request,	res: Response) {
+	const { params } = getByOrganizationRequestSchema.parse({
+		params: req.params
+	});
+
+	const { organizationId } = params;
 	const userId = req.user.id;
 
 	const invitations = await invitationService.getByOrganization(
@@ -40,16 +44,11 @@ export async function getByOrganization(
 	res.status(200).json(invitations);
 }
 
-type RemoveParams = {
-	organizationId: string;
-	userId: string;
-};
-export async function remove(
-	req: Request<RemoveParams>,
-	res: Response
-) {
-	const { organizationId, userId: invitedUserId } = req.params;
-	const { id: authenticatedUserId } = req.user;
+export async function remove(req: Request, res: Response) {
+	const { params } = removeRequestSchema.parse({ params: req.params });
+
+	const { organizationId, userId: invitedUserId } = params;
+	const authenticatedUserId = req.user.id;
 
 	await invitationService.delete({
 		organizationId,
@@ -69,7 +68,9 @@ export async function getForUser(req: Request, res: Response) {
 }
 
 export async function reject(req: Request, res: Response) {
-	const { organizationId } = req.body;
+	const { body } = rejectRequestSchema.parse({ body: req.body });
+
+	const { organizationId } = body;
 	const userId = req.user.id;
 
 	await invitationService.reject(userId, organizationId);
@@ -78,7 +79,9 @@ export async function reject(req: Request, res: Response) {
 }
 
 export async function accept(req: Request, res: Response) {
-	const { organizationId } = req.body;
+	const { body } = acceptRequestSchema.parse({ body: req.body });
+	
+	const { organizationId } = body;
 	const userId = req.user.id;
 
 	await invitationService.accept(userId, organizationId);
