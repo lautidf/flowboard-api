@@ -1,6 +1,11 @@
 import { Request, Response } from 'express';
 import { projectService } from './project.service';
-import { createRequestSchema, getByOrganizationRequestSchema, getOneRequestSchema, removeRequestSchema } from './project.schemas';
+import {
+	createRequestSchema,
+	getByOrganizationRequestSchema,
+	getOneRequestSchema,
+	removeRequestSchema
+} from './project.schemas';
 
 export async function create(req: Request, res: Response) {
 	const { params, body } = createRequestSchema.parse({

@@ -1,7 +1,10 @@
 import { Request, Response } from 'express';
 import { organizationService } from './organization.service';
-import { MembershipRole } from '../../../generated/prisma/enums';
-import { getAllRequestSchema, getOneRequestSchema, removeRequestSchema } from './organization.schemas';
+import {
+	getAllRequestSchema,
+	getOneRequestSchema,
+	removeRequestSchema
+} from './organization.schemas';
 
 export async function create(req: Request, res: Response) {
 	const { name } = req.body;
