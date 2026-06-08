@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 import { membershipService } from './membership.service';
 import {
+	updateRequestSchema,
 	getByOrganizationRequestSchema,
-	leaveRequestSchema,
 	removeRequestSchema,
-	updateRequestSchema
+	leaveRequestSchema
 } from './membership.schemas';
 
 export async function update(req: Request, res: Response) {

@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { authService } from './auth.service';
 import {
-	loginRequestSchema,
-	registerUserRequestSchema
+	registerUserRequestSchema,
+	loginRequestSchema
 } from './auth.schemas';
 
 export async function registerUser(req: Request, res: Response) {

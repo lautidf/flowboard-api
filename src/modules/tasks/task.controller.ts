@@ -4,8 +4,8 @@ import {
 	createRequestSchema,
 	getByProjectRequestSchema,
 	getOneRequestSchema,
-	removeRequestSchema,
-	updateRequestSchema
+	updateRequestSchema,
+	removeRequestSchema
 } from './task.schemas';
 
 export async function create(req: Request, res: Response) {

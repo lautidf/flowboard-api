@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
 import { invitationService } from './invitation.service';
 import {
-	acceptRequestSchema,
-	getByOrganizationRequestSchema,
-	rejectRequestSchema,
 	sendRequestSchema,
-	removeRequestSchema
+	getByOrganizationRequestSchema,
+	removeRequestSchema,
+	rejectRequestSchema,
+	acceptRequestSchema
 } from './invitation.schemas';
 
 export async function send(req: Request, res: Response) {
