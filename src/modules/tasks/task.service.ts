@@ -1,3 +1,4 @@
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 import { MembershipRole, Priority, Status } from '../../../generated/prisma/enums';
 import { ConflictError, ForbiddenError, NotFoundError } from '../../errors/errors';
 import { prisma } from '../../lib/prisma';
@@ -23,31 +24,42 @@ export async function create({
 		userId
 	});
 
-	const maxPosition = await prisma.task.aggregate({
-		where: {
-			projectId
-		},
-		_max: {
-			position: true
+	try {
+		const maxPosition = await prisma.task.aggregate({
+			where: {
+				projectId
+			},
+			_max: {
+				position: true
+			}
+		});
+	
+		const position = (maxPosition._max.position ?? 0) + 100;
+	
+		const task = await prisma.task.create({
+			data: {
+				title,
+				description,
+				projectId,
+				position,
+				creatorId: userId
+			},
+			omit: {
+				creatorId: true
+			}
+		});
+	
+		return task;
+	} catch (error) {
+		if (
+			error instanceof PrismaClientKnownRequestError
+			&& error.code === 'P2003'
+		) {
+			throw new NotFoundError('Project not found');
 		}
-	});
 
-	const position = (maxPosition._max.position ?? 0) + 100;
-
-	const task = await prisma.task.create({
-		data: {
-			title,
-			description,
-			projectId,
-			position,
-			creatorId: userId
-		},
-		omit: {
-			creatorId: true
-		}
-	});
-
-	return task;
+		throw error;
+	}
 }
 
 type GetByProjectInput = {
@@ -212,24 +224,37 @@ export async function update({
 		}
 	}	
 	
-	const updatedTask = await prisma.task.update({
-		where: {
-			id: taskId,
-		},
-		data: {
-			title,
-			description,
-			status,
-			priority,
-			position,
-			assigneeId
-		},
-		omit: {
-			creatorId: true
+	try {
+		const updatedTask = await prisma.task.update({
+			where: {
+				id: taskId,
+			},
+			data: {
+				title,
+				description,
+				status,
+				priority,
+				position,
+				assigneeId
+			},
+			omit: {
+				creatorId: true
+			}
+		});
+	
+		return updatedTask;
+	} catch (error) {
+		if (error instanceof PrismaClientKnownRequestError) {
+			switch (error.code) {
+				case 'P2003':
+					throw new NotFoundError('Assignee not found');
+				case 'P2025':
+					throw new NotFoundError('Task not found');
+			}
 		}
-	});
 
-	return updatedTask;
+		throw error;
+	}
 }
 
 export async function remove(taskId: string, userId: string) {
@@ -258,11 +283,22 @@ export async function remove(taskId: string, userId: string) {
 		minimumRole: MembershipRole.ADMIN
 	});
 
-	await prisma.task.delete({
-		where: {
-			id: taskId
+	try {
+		await prisma.task.delete({
+			where: {
+				id: taskId
+			}
+		});
+	} catch (error) {
+		if (
+			error instanceof PrismaClientKnownRequestError
+			&& error.code === 'P2025'
+		) {
+			throw new NotFoundError('Task not found');
 		}
-	});
+
+		throw error;
+	}
 }
 
 export const taskService = {

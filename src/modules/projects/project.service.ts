@@ -2,6 +2,7 @@ import { prisma } from '../../lib/prisma';
 import { NotFoundError } from '../../errors/errors';
 import { requireMembership, requireOrganizationExists } from '../organizations/organization.helpers';
 import { MembershipRole } from '../../../generated/prisma/client';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 
 type CreateProjectInput = {
 	name: string;
@@ -20,14 +21,25 @@ export async function create({
 		minimumRole: MembershipRole.ADMIN
 	});
 
-	const project = await prisma.project.create({
-		data: {
-			name,
-			organizationId
-		},
-	});
+	try {
+		const project = await prisma.project.create({
+			data: {
+				name,
+				organizationId
+			},
+		});
 
-	return project;
+		return project;
+	} catch (error) {
+		if (
+			error instanceof PrismaClientKnownRequestError
+			&& error.code === 'P2003'
+		) {
+			throw new NotFoundError('Organization not found');
+		}
+		
+		throw error;
+	}	
 }
 
 export async function getByOrganization(

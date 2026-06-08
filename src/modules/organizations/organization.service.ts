@@ -28,11 +28,17 @@ export async function create({ name, userId }: CreateInput) {
 
 		return organization;
 	} catch (error) {
-		if (
-			error instanceof PrismaClientKnownRequestError &&
-			error.code === 'P2002'
-		) {
-			throw new ConflictError('An organization with this name already exists');
+		if (error instanceof PrismaClientKnownRequestError) {
+			switch (error.code) {
+				case 'P2002':
+					throw new ConflictError(
+						'An organization with this name already exists'
+					);
+				case 'P2003':
+					throw new NotFoundError(
+						'User not found'
+					);
+			}
 		}
 
 		throw error;
@@ -99,11 +105,22 @@ export async function remove(id: string, userId: string) {
 		minimumRole: MembershipRole.ADMIN
 	});
 
-	await prisma.organization.delete({
-		where: {
-			id
+	try {
+		await prisma.organization.delete({
+			where: {
+				id
+			}
+		});
+	} catch (error) {
+		if (
+			error instanceof PrismaClientKnownRequestError
+			&& error.code === 'P2025'
+		) {
+			throw new NotFoundError('Organization not found');
 		}
-	});
+
+		throw error;
+	}
 }
 
 export const organizationService = {

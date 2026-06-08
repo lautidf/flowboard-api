@@ -57,11 +57,17 @@ export async function create({
 
 		return invitation;
 	} catch (error) {
-		if (
-			error instanceof PrismaClientKnownRequestError
-			&& error.code === 'P2002'
-		) {
-			throw new ConflictError('A pending invitation for this user already exists');
+		if (error instanceof PrismaClientKnownRequestError) {
+			switch (error.code) {
+				case 'P2002':
+					throw new ConflictError(
+						'A pending invitation for this user already exists'
+					);
+				case 'P2003':
+					throw new NotFoundError(
+						'Referenced resource no longer exists'
+					);
+			}
 		}
 
 		throw error;
@@ -181,23 +187,41 @@ export async function accept(userId: string, organizationId: string) {
 		throw new NotFoundError('Invitation not found');
 	}
 
-	await prisma.$transaction([
-		prisma.membership.create({
-			data: {
-				userId,
-				organizationId,
-				role: invitation.role
-			}
-		}),
-		prisma.invitation.delete({
-			where: {
-				invitedUserId_organizationId: {
-					invitedUserId: userId,
-					organizationId
+	try {
+		await prisma.$transaction([
+			prisma.membership.create({
+				data: {
+					userId,
+					organizationId,
+					role: invitation.role
 				}
+			}),
+			prisma.invitation.delete({
+				where: {
+					invitedUserId_organizationId: {
+						invitedUserId: userId,
+						organizationId
+					}
+				}
+			})
+		]);
+	} catch (error) {
+		if (error instanceof PrismaClientKnownRequestError) {
+			switch (error.code) {
+				case 'P2002':
+					throw new ConflictError(
+						'User is already a member of the organization'
+					);
+				case 'P2003':
+				case 'P2025':
+					throw new NotFoundError(
+						'Invitation not found'
+					);
 			}
-		})
-	]);
+		}
+
+		throw error;
+	}
 }
 
 export const invitationService = {
