@@ -16,7 +16,9 @@ export async function registerUser({
 	name,
 	password
 }: RegisterUserInput) {
-	if (await prisma.user.findUnique({ where: { email } })) {
+	const existingUser = await prisma.user.findUnique({ where: { email } });
+	
+	if (existingUser) {
 		throw new ConflictError('User with this email already exists');
 	}
 
