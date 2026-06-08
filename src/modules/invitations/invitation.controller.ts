@@ -68,9 +68,9 @@ export async function getForUser(req: Request, res: Response) {
 }
 
 export async function reject(req: Request, res: Response) {
-	const { body } = rejectRequestSchema.parse({ body: req.body });
+	const { params } = rejectRequestSchema.parse({ params: req.params });
 
-	const { organizationId } = body;
+	const { organizationId } = params;
 	const userId = req.user.id;
 
 	await invitationService.reject(userId, organizationId);
@@ -79,9 +79,9 @@ export async function reject(req: Request, res: Response) {
 }
 
 export async function accept(req: Request, res: Response) {
-	const { body } = acceptRequestSchema.parse({ body: req.body });
+	const { params } = acceptRequestSchema.parse({ params: req.params });
 	
-	const { organizationId } = body;
+	const { organizationId } = params;
 	const userId = req.user.id;
 
 	await invitationService.accept(userId, organizationId);

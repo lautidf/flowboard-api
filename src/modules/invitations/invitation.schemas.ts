@@ -25,13 +25,13 @@ export const removeRequestSchema = z.object({
 });
 
 export const rejectRequestSchema = z.object({
-	body: z.object({
+	params: z.object({
 		organizationId: z.cuid2()
 	})
 });
 
 export const acceptRequestSchema = z.object({
-	body: z.object({
+	params: z.object({
 		organizationId: z.cuid2()
 	})
 });

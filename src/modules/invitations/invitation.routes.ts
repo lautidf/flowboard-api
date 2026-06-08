@@ -7,7 +7,7 @@ router.post('/organizations/:organizationId/invitations', send);
 router.get('/organizations/:organizationId/invitations', getByOrganization);
 router.delete('/organizations/:organizationId/invitations/:userId', remove);
 router.get('/invitations', getForUser);
-router.post('/invitations/reject', reject);
-router.post('/invitations/accept', accept);
+router.post('/invitations/:organizationId/reject', reject);
+router.post('/invitations/:organizationId/accept', accept);
 
 export const invitationRoutes = router;
