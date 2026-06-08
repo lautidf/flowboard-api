@@ -1,6 +1,6 @@
 {
   "type": "module",
-  "name": "team-management-api",
+  "name": "flowboard-api",
   "version": "0.1.0",
   "description": "Backend of a multi-tenant system for managing teams, projects, and tasks with role-based access control.",
   "main": "index.js",
