@@ -1,4 +1,4 @@
-import { MembershipRole } from '../../../generated/prisma/enums';
+import { MembershipRole } from '../../generated/prisma/enums';
 import { ForbiddenError, NotFoundError } from '../../errors/errors';
 import { prisma } from '../../lib/prisma';
 

@@ -1,5 +1,5 @@
-import { MembershipRole } from '../../../generated/prisma/enums';
-import { PrismaClientKnownRequestError } from '../../../generated/prisma/internal/prismaNamespace';
+import { MembershipRole } from '../../generated/prisma/enums';
+import { PrismaClientKnownRequestError } from '../../generated/prisma/internal/prismaNamespace';
 import { ConflictError, NotFoundError } from '../../errors/errors';
 import { prisma } from '../../lib/prisma';
 

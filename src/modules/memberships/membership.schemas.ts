@@ -1,5 +1,5 @@
 import z from 'zod';
-import { MembershipRole } from '../../../generated/prisma/enums';
+import { MembershipRole } from '../../generated/prisma/enums';
 
 export const updateRequestSchema = z.object({
 	params: z.object({

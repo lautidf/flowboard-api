@@ -1,4 +1,4 @@
-import { PrismaClientKnownRequestError } from '../../../generated/prisma/internal/prismaNamespace';
+import { PrismaClientKnownRequestError } from '../../generated/prisma/internal/prismaNamespace';
 import { ConflictError, UnauthorizedError } from '../../errors/errors';
 import { prisma } from '../../lib/prisma';
 import argon2 from 'argon2';

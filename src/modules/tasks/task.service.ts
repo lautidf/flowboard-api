@@ -1,5 +1,5 @@
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { MembershipRole, Priority, Status } from '../../../generated/prisma/enums';
+import { MembershipRole, Priority, Status } from '../../generated/prisma/enums';
 import { ConflictError, ForbiddenError, NotFoundError } from '../../errors/errors';
 import { prisma } from '../../lib/prisma';
 import { requireMembership } from '../organizations/organization.helpers';

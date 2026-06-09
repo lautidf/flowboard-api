@@ -1,7 +1,7 @@
 import { prisma } from '../../lib/prisma';
 import { NotFoundError } from '../../errors/errors';
 import { requireMembership, requireOrganizationExists } from '../organizations/organization.helpers';
-import { MembershipRole } from '../../../generated/prisma/client';
+import { MembershipRole } from '../../generated/prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 
 type CreateProjectInput = {
