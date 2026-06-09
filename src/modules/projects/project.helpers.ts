@@ -1,5 +1,5 @@
-import { NotFoundError } from '../../errors/errors';
-import { prisma } from '../../lib/prisma';
+import { NotFoundError } from '../../errors/errors.js';
+import { prisma } from '../../lib/prisma.js';
 
 export async function getOrganizationId(projectId: string) {
 	const project = await prisma.project.findUnique({

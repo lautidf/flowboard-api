@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { accept, getByOrganization, getForUser, reject, remove, send } from './invitation.controller';
+import { accept, getByOrganization, getForUser, reject, remove, send } from './invitation.controller.js';
 
 const router = Router();
 

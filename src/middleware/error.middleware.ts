@@ -1,6 +1,6 @@
 import { ErrorRequestHandler, NextFunction, Request } from 'express';
-import { logger } from '../lib/logger';
-import { AppError, ConflictError, NotFoundError } from '../errors/errors';
+import { logger } from '../lib/logger.js';
+import { AppError, ConflictError, NotFoundError } from '../errors/errors.js';
 import { ZodError } from 'zod';
 
 export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {

@@ -1,10 +1,10 @@
 // Temporary development auth middleware.
 // Replace with real JWT verification later.
 import { Request, Response, NextFunction } from 'express';
-import { DEV_USER_EMAIL, DEV_USER_ID, JWT_SECRET, NODE_ENV } from '../config/env';
-import { UnauthorizedError } from '../errors/errors';
+import { DEV_USER_EMAIL, DEV_USER_ID, JWT_SECRET, NODE_ENV } from '../config/env.js';
+import { UnauthorizedError } from '../errors/errors.js';
 import jwt from 'jsonwebtoken';
-import { JwtPayload } from '../types/auth.types';
+import { JwtPayload } from '../types/auth.types.js';
 
 export function authenticateJWT(
   req: Request,

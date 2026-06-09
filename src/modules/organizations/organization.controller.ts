@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import { organizationService } from './organization.service';
+import { organizationService } from './organization.service.js';
 import {
 	createRequestSchema,
 	getAllRequestSchema,
 	getOneRequestSchema,
 	removeRequestSchema
-} from './organization.schemas';
+} from './organization.schemas.js';
 
 export async function create(req: Request, res: Response) {
 	const { body } = createRequestSchema.parse({ body: req.body });

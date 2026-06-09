@@ -1,6 +1,6 @@
-import { MembershipRole } from '../../generated/prisma/enums';
-import { ForbiddenError, NotFoundError } from '../../errors/errors';
-import { prisma } from '../../lib/prisma';
+import { MembershipRole } from '../../generated/prisma/enums.js';
+import { ForbiddenError, NotFoundError } from '../../errors/errors.js';
+import { prisma } from '../../lib/prisma.js';
 
 export async function requireOrganizationExists(id: string) {
 	const organization = await prisma.organization.findUnique({

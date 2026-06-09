@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getByOrganization, leave, remove, update } from './membership.controller';
+import { getByOrganization, leave, remove, update } from './membership.controller.js';
 
 const router = Router();
 

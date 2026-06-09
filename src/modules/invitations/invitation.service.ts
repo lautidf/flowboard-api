@@ -1,8 +1,8 @@
-import { MembershipRole } from '../../generated/prisma/enums';
-import { PrismaClientKnownRequestError } from '../../generated/prisma/internal/prismaNamespace';
-import { ConflictError, NotFoundError } from '../../errors/errors';
-import { prisma } from '../../lib/prisma';
-import { requireMembership, requireOrganizationExists } from '../organizations/organization.helpers';
+import { MembershipRole } from '../../generated/prisma/enums.js';
+import { PrismaClientKnownRequestError } from '../../generated/prisma/internal/prismaNamespace.js';
+import { ConflictError, NotFoundError } from '../../errors/errors.js';
+import { prisma } from '../../lib/prisma.js';
+import { requireMembership, requireOrganizationExists } from '../organizations/organization.helpers.js';
 
 type SendInput = {
 	organizationId: string;

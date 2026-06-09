@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { create, getAll, getOne, remove } from './organization.controller';
+import { create, getAll, getOne, remove } from './organization.controller.js';
 
 const router = Router();
 

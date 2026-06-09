@@ -1,10 +1,10 @@
-import { PrismaClientKnownRequestError } from '../../generated/prisma/internal/prismaNamespace';
-import { ConflictError, UnauthorizedError } from '../../errors/errors';
-import { prisma } from '../../lib/prisma';
+import { PrismaClientKnownRequestError } from '../../generated/prisma/internal/prismaNamespace.js';
+import { ConflictError, UnauthorizedError } from '../../errors/errors.js';
+import { prisma } from '../../lib/prisma.js';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
-import { JwtPayload } from '../../types/auth.types';
-import { JWT_SECRET } from '../../config/env';
+import { JwtPayload } from '../../types/auth.types.js';
+import { JWT_SECRET } from '../../config/env.js';
 
 type RegisterUserInput = {
 	email: string;

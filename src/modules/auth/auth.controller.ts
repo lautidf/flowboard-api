@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { authService } from './auth.service';
+import { authService } from './auth.service.js';
 import {
 	registerUserRequestSchema,
 	loginRequestSchema
-} from './auth.schemas';
+} from './auth.schemas.js';
 
 export async function registerUser(req: Request, res: Response) {
 	const { body } = registerUserRequestSchema.parse({ body: req.body });

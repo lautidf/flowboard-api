@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
-import { taskService } from './task.service';
+import { taskService } from './task.service.js';
 import {
 	createRequestSchema,
 	getByProjectRequestSchema,
 	getOneRequestSchema,
 	updateRequestSchema,
 	removeRequestSchema
-} from './task.schemas';
+} from './task.schemas.js';
 
 export async function create(req: Request, res: Response) {
 	const { params, body } = createRequestSchema.parse({

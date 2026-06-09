@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import { membershipService } from './membership.service';
+import { membershipService } from './membership.service.js';
 import {
 	updateRequestSchema,
 	getByOrganizationRequestSchema,
 	removeRequestSchema,
 	leaveRequestSchema
-} from './membership.schemas';
+} from './membership.schemas.js';
 
 export async function update(req: Request, res: Response) {
 	const { params, body } = updateRequestSchema.parse({

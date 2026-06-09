@@ -1,13 +1,13 @@
 import express, {Request, Response} from 'express';
-import { authenticateJWT } from './middleware/auth.middleware';
-import { organizationRoutes } from './modules/organizations/organization.routes';
-import { errorHandler } from './middleware/error.middleware';
-import { projectRoutes } from './modules/projects/project.routes';
-import { authRoutes } from './modules/auth/auth.routes';
-import { invitationRoutes } from './modules/invitations/invitation.routes';
-import { taskRoutes } from './modules/tasks/task.routes';
-import { membershipRoutes } from './modules/memberships/membership.routes';
-import { userRoutes } from './modules/users/user.routes';
+import { authenticateJWT } from './middleware/auth.middleware.js';
+import { organizationRoutes } from './modules/organizations/organization.routes.js';
+import { errorHandler } from './middleware/error.middleware.js';
+import { projectRoutes } from './modules/projects/project.routes.js';
+import { authRoutes } from './modules/auth/auth.routes.js';
+import { invitationRoutes } from './modules/invitations/invitation.routes.js';
+import { taskRoutes } from './modules/tasks/task.routes.js';
+import { membershipRoutes } from './modules/memberships/membership.routes.js';
+import { userRoutes } from './modules/users/user.routes.js';
 
 export const app = express();
 

@@ -1,8 +1,8 @@
-import { prisma } from '../../lib/prisma';
-import { NotFoundError } from '../../errors/errors';
-import { requireMembership, requireOrganizationExists } from '../organizations/organization.helpers';
-import { MembershipRole } from '../../generated/prisma/client';
+import { prisma } from '../../lib/prisma.js';
+import { NotFoundError } from '../../errors/errors.js';
+import { requireMembership, requireOrganizationExists } from '../organizations/organization.helpers.js';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
+import { MembershipRole } from '../../generated/prisma/enums.js';
 
 type CreateProjectInput = {
 	name: string;

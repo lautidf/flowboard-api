@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { userService } from './user.service';
+import { userService } from './user.service.js';
 
 export async function deleteMe(req: Request, res: Response) {
 	const userId = req.user.id;
