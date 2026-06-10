@@ -17,7 +17,7 @@ app.get('/', (_req: Request, res: Response) => {
   res.json({ status: 'ok' });
 });
 
-app.use(authRoutes);
+app.use('/', authRoutes);
 
 app.use(authenticateJWT);
 
