@@ -1,6 +1,6 @@
-import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
+import { ErrorRequestHandler, Request, Response } from 'express';
 import { logger } from '../lib/logger.js';
-import { AppError, ConflictError, NotFoundError } from '../errors/errors.js';
+import { AppError, NotFoundError } from '../errors/errors.js';
 import { ZodError } from 'zod';
 
 export function notExistentRouteHandler(req: Request, _res: Response) {
