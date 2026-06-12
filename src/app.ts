@@ -1,7 +1,7 @@
 import express, {Request, Response} from 'express';
 import { authenticateJWT } from './middleware/auth.middleware.js';
 import { organizationRoutes } from './modules/organizations/organization.routes.js';
-import { errorHandler } from './middleware/error.middleware.js';
+import { errorHandler, notExistentRouteHandler } from './middleware/error.middleware.js';
 import { projectRoutes } from './modules/projects/project.routes.js';
 import { authRoutes } from './modules/auth/auth.routes.js';
 import { invitationRoutes } from './modules/invitations/invitation.routes.js';
@@ -28,4 +28,5 @@ app.use('/', taskRoutes);
 app.use('/', membershipRoutes);
 app.use('/', userRoutes)
 
+app.use(notExistentRouteHandler);
 app.use(errorHandler);
