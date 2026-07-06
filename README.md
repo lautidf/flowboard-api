@@ -2,6 +2,8 @@
 
 Multi-tenant project management API built with Node.js, TypeScript, Express, Prisma and PostgreSQL.
 
+**Live API:** https://flowboard-api-d0vn.onrender.com
+
 ## Features
 
 - User authentication
