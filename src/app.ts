@@ -1,4 +1,5 @@
-import express, {Request, Response} from 'express';
+import express, { Request, Response } from 'express';
+import swaggerUi from 'swagger-ui-express';
 import { authenticateJWT } from './middleware/auth.middleware.js';
 import { organizationRoutes } from './modules/organizations/organization.routes.js';
 import { errorHandler, notExistentRouteHandler } from './middleware/error.middleware.js';
@@ -8,8 +9,16 @@ import { invitationRoutes } from './modules/invitations/invitation.routes.js';
 import { taskRoutes } from './modules/tasks/task.routes.js';
 import { membershipRoutes } from './modules/memberships/membership.routes.js';
 import { userRoutes } from './modules/users/user.routes.js';
+import { swaggerSpec } from './docs/openapi.js';
+
 
 export const app = express();
+
+app.use(
+  '/docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec)
+);
 
 app.use(express.json());
 
