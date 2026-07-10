@@ -1,0 +1,98 @@
+paths:
+  /register:
+    post:
+      security: []
+      summary: Register a new user
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  $ref: '#/components/schemas/userName'
+                email:
+                  $ref: '#/components/schemas/email'
+                password:
+                  $ref: '#/components/schemas/password'
+              required:
+                - name
+                - email
+                - password
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+        '400':
+          $ref: '#/components/responses/invalidInput'
+        '409':
+          description: User already exists
+          schema:
+            $ref: '#/components/schemas/errorResponse'
+  /login:
+    post:
+      security: []
+      summary: Login a user
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  $ref: '#/components/schemas/email'
+                password:
+                  $ref: '#/components/schemas/password'
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: User logged in successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/user'
+                  token:
+                    type: string
+                    format: JWT
+        '400':
+          $ref: '#/components/responses/invalidInput'
+        '401':
+          description: Wrong credentials
+          schema:
+            $ref: '#/components/schemas/errorResponse'
+        '404':
+          description: User not found
+          schema:
+            $ref: '#/components/schemas/errorResponse'
+components:
+  schemas:
+    userName:
+      type: string
+    email:
+      type: string
+      format: email
+    password:
+      type: string
+    user:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/id'
+        name:
+          $ref: '#/components/schemas/userName'
+        email:
+          $ref: '#/components/schemas/email'

@@ -1,0 +1,27 @@
+components:
+  securitySchemes:
+    bearerHttpAuthentication:
+      description: Bearer token using a JWT
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
+  schemas:
+    errorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Error message
+    id:
+      type: string
+      format: cuid
+  responses:
+    invalidInput:
+      description: Invalid input
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errorResponse'
+
+security:
+  - bearerAuth: [] 
