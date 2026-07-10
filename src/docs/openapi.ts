@@ -13,6 +13,6 @@ export const swaggerSpec = swaggerJSDoc({
     ],
   },
   apis: [
-    './src/docs/paths/**/*.yaml',
+    './src/docs/**/*.yaml',
   ],
 });
