@@ -17,7 +17,11 @@ export const app = express();
 app.use(
   '/docs',
   swaggerUi.serve,
-  swaggerUi.setup(swaggerSpec)
+  swaggerUi.setup(swaggerSpec, {
+    swaggerOptions: {
+      defaultModelsExpandDepth: -1,
+    },
+  })
 );
 
 app.use(express.json());
