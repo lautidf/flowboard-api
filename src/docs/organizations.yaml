@@ -1,0 +1,106 @@
+paths:
+  /organizations:
+    post:
+      summary: Create a new organization
+      tags:
+        - Organizations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  $ref: '#/components/schemas/organizationName'
+              required:
+                - name
+      responses:
+        '201':
+          description: Organization created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    $ref: '#/components/schemas/id'
+                  name:
+                    $ref: '#/components/schemas/organizationName'
+        '400':
+          $ref: '#/components/responses/invalidInput'
+        '401':
+          $ref: '#/components/responses/notAuthenticated'
+        '409':
+          description: Organization already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+    get:
+      summary: Get all the organizations the user belongs to
+      tags:
+        - Organizations
+      responses:
+        '200':
+          description: List of organizations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      $ref: '#/components/schemas/id'
+                    name:
+                      $ref: '#/components/schemas/organizationName'
+        '401':
+          $ref: '#/components/responses/notAuthenticated'
+  /organizations/{organizationId}:
+    get:
+      summary: Get an organization by ID
+      tags:
+        - Organizations
+      parameters:
+        - $ref: '#/components/parameters/organizationId'
+      responses:
+        '200':
+          description: Organization details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    $ref: '#/components/schemas/id'
+                  name:
+                    $ref: '#/components/schemas/organizationName'
+        '401':
+          $ref: '#/components/responses/notAuthenticated'
+        '404':
+          $ref: '#/components/responses/organizationNotFound'
+    delete:
+      summary: Delete an organization by ID
+      tags:
+        - Organizations
+      parameters:
+        - $ref: '#/components/parameters/organizationId'
+      responses:
+        '204':
+          description: Organization deleted successfully
+        '401':
+          $ref: '#/components/responses/notAuthenticated'
+        '403':
+          $ref: '#/components/responses/notAdmin'
+        '404':
+          description: Organization not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+components:
+  schemas:
+    organizationName:
+      type: string
+      example: My Organization

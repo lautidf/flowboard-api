@@ -28,3 +28,22 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/errorResponse'
+    organizationNotFound:
+      description: Organization not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errorResponse'
+    forbidden:
+      description: Insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errorResponse'
+  parameters:
+    organizationId:
+      name: organizationId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/id'
