@@ -71,7 +71,7 @@ paths:
         '400':
           $ref: '#/components/responses/invalidInput'
         '401':
-          description: Wrong credentials
+          description: Invalid credentials
           schema:
             $ref: '#/components/schemas/errorResponse'
         '404':
