@@ -2,7 +2,7 @@ import { MembershipRole } from '../../generated/prisma/enums.js';
 import { PrismaClientKnownRequestError } from '../../generated/prisma/internal/prismaNamespace.js';
 import { ConflictError, NotFoundError } from '../../errors/errors.js';
 import { prisma } from '../../lib/prisma.js';
-import { requireMembership, requireOrganizationExists } from '../organizations/organization.helpers.js';
+import { requireMembership } from './membership.helpers.js';
 
 type UpdateInput = {
 	organizationId: string;
@@ -16,7 +16,6 @@ export async function update({
 	role: updatedRole,
 	userId
 }: UpdateInput) {
-	await requireOrganizationExists(organizationId);
 	await requireMembership({
 		userId,
 		organizationId,
@@ -75,7 +74,6 @@ export async function update({
 }
 
 export async function getByOrganization(organizationId: string, userId: string) {
-	await requireOrganizationExists(organizationId);
 	await requireMembership({
 		userId,
 		organizationId,
@@ -101,7 +99,6 @@ export async function remove({
 	memberId,
 	userId
 }: RemoveInput) {
-	await requireOrganizationExists(organizationId);
 	await requireMembership({
 		userId,
 		organizationId,
@@ -149,7 +146,6 @@ export async function remove({
 }
 
 export async function leave(organizationId: string, userId: string) {
-	await requireOrganizationExists(organizationId);
 	await requireMembership({ userId, organizationId });
 
 	const membership = await prisma.membership.findUnique({

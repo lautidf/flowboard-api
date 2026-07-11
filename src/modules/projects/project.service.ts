@@ -1,6 +1,6 @@
 import { prisma } from '../../lib/prisma.js';
 import { NotFoundError } from '../../errors/errors.js';
-import { requireMembership, requireOrganizationExists } from '../organizations/organization.helpers.js';
+import { requireMembership } from '../memberships/membership.helpers.js';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 import { MembershipRole } from '../../generated/prisma/enums.js';
 
@@ -14,7 +14,6 @@ export async function create({
 	organizationId,
 	userId
 }: CreateProjectInput) {
-	await requireOrganizationExists(organizationId);
 	await requireMembership({
 		userId,
 		organizationId,
@@ -46,7 +45,6 @@ export async function getByOrganization(
 	organizationId: string,
 	userId: string
 ) {
-	await requireOrganizationExists(organizationId);
 	await requireMembership({ userId,	organizationId });
 
 	const projects = await prisma.project.findMany({

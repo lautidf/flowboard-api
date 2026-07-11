@@ -2,18 +2,6 @@ import { MembershipRole } from '../../generated/prisma/enums.js';
 import { ForbiddenError, NotFoundError } from '../../errors/errors.js';
 import { prisma } from '../../lib/prisma.js';
 
-export async function requireOrganizationExists(id: string) {
-	const organization = await prisma.organization.findUnique({
-		where: {
-			id
-		}
-	});
-
-	if (!organization) {
-		throw new NotFoundError('Organization not found');
-	}
-}
-
 type RequireMembershipInput = {
 	userId: string;
 	organizationId: string;
@@ -34,7 +22,7 @@ export async function requireMembership({
 	});
 
 	if (!membership) {
-		throw new ForbiddenError('User is not a member of the organization');
+		throw new NotFoundError('Organization not found');
 	}
 
 	if(

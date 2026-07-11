@@ -2,7 +2,7 @@ import { MembershipRole } from '../../generated/prisma/enums.js';
 import { PrismaClientKnownRequestError } from '../../generated/prisma/internal/prismaNamespace.js';
 import { ConflictError, NotFoundError } from '../../errors/errors.js';
 import { prisma } from '../../lib/prisma.js';
-import { requireMembership, requireOrganizationExists } from '../organizations/organization.helpers.js';
+import { requireMembership } from '../memberships/membership.helpers.js';
 
 type SendInput = {
 	organizationId: string;
@@ -16,7 +16,6 @@ export async function create({
 	role,
 	senderId
 }: SendInput) {
-	await requireOrganizationExists(organizationId);
 	await requireMembership({
 		userId: senderId,
 		organizationId,
@@ -78,7 +77,6 @@ export async function getByOrganization(
 	organizationId: string,
 	userId: string
 ) {
-	await requireOrganizationExists(organizationId);
 	await requireMembership({
 		organizationId,
 		userId,
@@ -109,7 +107,6 @@ export async function remove({
 	invitedUserId,
 	authenticatedUserId
 }: RemoveInput) {
-	await requireOrganizationExists(organizationId);
 	await requireMembership({
 		organizationId,
 		userId: authenticatedUserId,

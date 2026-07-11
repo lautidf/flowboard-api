@@ -2,7 +2,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 import { MembershipRole, Priority, Status } from '../../generated/prisma/enums.js';
 import { ConflictError, ForbiddenError, NotFoundError } from '../../errors/errors.js';
 import { prisma } from '../../lib/prisma.js';
-import { requireMembership } from '../organizations/organization.helpers.js';
+import { requireMembership } from '../memberships/membership.helpers.js';
 import { getOrganizationId } from '../projects/project.helpers.js';
 
 type CreateInput = {
