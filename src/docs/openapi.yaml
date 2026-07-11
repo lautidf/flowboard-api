@@ -3,7 +3,7 @@ components:
     bearerHttpAuthentication:
       description: Bearer token using a JWT
       type: http
-      scheme: Bearer
+      scheme: bearer
       bearerFormat: JWT
   schemas:
     errorResponse:
@@ -22,6 +22,9 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/errorResponse'
-
-security:
-  - bearerAuth: [] 
+    notAuthenticated:
+      description: Not authenticated
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errorResponse'

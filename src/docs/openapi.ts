@@ -11,8 +11,13 @@ export const swaggerSpec = swaggerJSDoc({
 		servers: [
 			{ url: API_URL },
 		],
+		security: [
+			{ bearerHttpAuthentication: [] }
+		]
 	},
 	apis: [
     './src/docs/**/*.yaml',
   ],
 });
+
+console.log(JSON.stringify(swaggerSpec));
