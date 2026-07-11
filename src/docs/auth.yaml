@@ -76,14 +76,14 @@ paths:
             $ref: '#/components/schemas/errorResponse'
 components:
   schemas:
-    userName:
+    UserName:
       type: string
-    email:
+    Email:
       type: string
       format: email
-    password:
+    Password:
       type: string
-    user:
+    User:
       type: object
       properties:
         id:

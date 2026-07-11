@@ -6,35 +6,35 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
-    errorResponse:
+    ErrorResponse:
       type: object
       properties:
         message:
           type: string
           example: Error message
-    id:
+    Id:
       type: string
       format: cuid
   responses:
-    invalidInput:
+    InvalidInput:
       description: Invalid input
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/errorResponse'
-    notAuthenticated:
+    NotAuthenticated:
       description: Not authenticated
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/errorResponse'
-    organizationNotFound:
+    OrganizationNotFound:
       description: Organization not found
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/errorResponse'
-    forbidden:
+    Forbidden:
       description: Insufficient permissions
       content:
         application/json:

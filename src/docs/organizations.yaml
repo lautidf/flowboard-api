@@ -101,6 +101,6 @@ paths:
                 $ref: '#/components/schemas/errorResponse'
 components:
   schemas:
-    organizationName:
+    OrganizationName:
       type: string
       example: My Organization
