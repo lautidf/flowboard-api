@@ -19,5 +19,3 @@ export const swaggerSpec = swaggerJSDoc({
     './src/docs/**/*.yaml',
   ],
 });
-
-console.log(JSON.stringify(swaggerSpec));
