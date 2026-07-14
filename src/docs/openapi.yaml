@@ -18,8 +18,8 @@ components:
     Role:
       type: string
       enum:
-        - ADMIN
         - MEMBER
+        - ADMIN
   responses:
     BadRequest:
       description: The request is invalid
