@@ -15,6 +15,20 @@ components:
     Id:
       type: string
       format: cuid
+    UserName:
+      type: string
+    Email:
+      type: string
+      format: email
+    User:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        name:
+          $ref: '#/components/schemas/UserName'
+        email:
+          $ref: '#/components/schemas/Email'
     Role:
       type: string
       enum:
@@ -54,6 +68,12 @@ components:
   parameters:
     organizationId:
       name: organizationId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/Id'
+    userId:
+      name: userId
       in: path
       required: true
       schema:
