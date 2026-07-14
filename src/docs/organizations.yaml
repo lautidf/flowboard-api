@@ -94,11 +94,7 @@ paths:
         '403':
           $ref: '#/components/responses/NotAdmin'
         '404':
-          description: Organization not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/OrganizationNotFound'
 components:
   schemas:
     OrganizationName:
