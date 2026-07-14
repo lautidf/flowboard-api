@@ -13,7 +13,15 @@ export const swaggerSpec = swaggerJSDoc({
 		],
 		security: [
 			{ bearerHttpAuthentication: [] }
-		]
+		],
+		tags: [
+			{ name: 'Authentication' },
+			{ name: 'Organizations' },
+			{ name: 'Invitations' },
+			{ name: 'Memberships' },
+			{ name: 'Projects' },
+			{ name: 'Tasks' },
+		],
 	},
 	apis: [
     './src/docs/**/*.yaml',
