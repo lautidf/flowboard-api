@@ -139,7 +139,6 @@ export async function getForUser(userId: string) {
 	return prisma.invitation.findMany({
 		where: { invitedUserId: userId },
 		select: {
-			invitedUserId: true,
 			role: true,
 			organization: {
 				select: {
