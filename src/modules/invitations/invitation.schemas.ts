@@ -7,7 +7,7 @@ export const sendRequestSchema = z.object({
 	}),
 	body: z.object({
 		email: z.email(),
-		role: z.enum(MembershipRole)
+		role: z.enum(MembershipRole).optional().default(MembershipRole.MEMBER)
 	})
 });
 
