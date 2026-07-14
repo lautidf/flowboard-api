@@ -15,27 +15,38 @@ components:
     Id:
       type: string
       format: cuid
+    Role:
+      type: string
+      enum:
+        - ADMIN
+        - MEMBER
   responses:
-    InvalidInput:
-      description: Invalid input
+    BadRequest:
+      description: The request is invalid
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/errorResponse'
-    NotAuthenticated:
-      description: Not authenticated
+    Unauthorized:
+      description: Authentication is required
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/errorResponse'
-    OrganizationNotFound:
-      description: Organization not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/errorResponse'
+            $ref: '#/components/schemas/errorResponse'    
     Forbidden:
       description: Insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errorResponse'
+    NotFound:
+      description: A referenced resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/errorResponse'
+    Conflict:
+      description: The request conflicts with the current state of the resource
       content:
         application/json:
           schema:

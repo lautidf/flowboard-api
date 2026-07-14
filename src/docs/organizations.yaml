@@ -28,15 +28,11 @@ paths:
                   name:
                     $ref: '#/components/schemas/OrganizationName'
         '400':
-          $ref: '#/components/responses/InvalidInput'
+          $ref: '#/components/responses/BadRequest'
         '401':
-          $ref: '#/components/responses/NotAuthenticated'
+          $ref: '#/components/responses/Unauthorized'
         '409':
-          description: Organization already exists
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/Conflict'
     get:
       summary: Get all the organizations the user belongs to
       tags:
@@ -56,7 +52,7 @@ paths:
                     name:
                       $ref: '#/components/schemas/OrganizationName'
         '401':
-          $ref: '#/components/responses/NotAuthenticated'
+          $ref: '#/components/responses/Unauthorized'
   /organizations/{organizationId}:
     get:
       summary: Get an organization by ID
@@ -77,9 +73,9 @@ paths:
                   name:
                     $ref: '#/components/schemas/OrganizationName'
         '401':
-          $ref: '#/components/responses/NotAuthenticated'
+          $ref: '#/components/responses/Unauthorized'
         '404':
-          $ref: '#/components/responses/OrganizationNotFound'
+          $ref: '#/components/responses/NotFound'
     delete:
       summary: Delete an organization by ID
       tags:
@@ -90,11 +86,11 @@ paths:
         '204':
           description: Organization deleted successfully
         '401':
-          $ref: '#/components/responses/NotAuthenticated'
+          $ref: '#/components/responses/Unauthorized'
         '403':
-          $ref: '#/components/responses/NotAdmin'
+          $ref: '#/components/responses/Forbidden'
         '404':
-          $ref: '#/components/responses/OrganizationNotFound'
+          $ref: '#/components/responses/NotFound'
 components:
   schemas:
     OrganizationName:

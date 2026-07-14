@@ -30,11 +30,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
         '400':
-          $ref: '#/components/responses/InvalidInput'
+          $ref: '#/components/responses/BadRequest'
         '409':
-          description: User already exists
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/Conflict'
   /login:
     post:
       security: []
@@ -69,7 +67,7 @@ paths:
                     type: string
                     format: JWT
         '400':
-          $ref: '#/components/responses/InvalidInput'
+          $ref: '#/components/responses/BadRequest'
         '401':
           description: Invalid credentials
           schema:
