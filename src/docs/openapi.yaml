@@ -26,31 +26,31 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/errorResponse'
+            $ref: '#/components/schemas/ErrorResponse'
     Unauthorized:
       description: Authentication is required
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/errorResponse'    
+            $ref: '#/components/schemas/ErrorResponse'    
     Forbidden:
       description: Insufficient permissions
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/errorResponse'
+            $ref: '#/components/schemas/ErrorResponse'
     NotFound:
       description: A referenced resource was not found
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/errorResponse'
+            $ref: '#/components/schemas/ErrorResponse'
     Conflict:
       description: The request conflicts with the current state of the resource
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/errorResponse'
+            $ref: '#/components/schemas/ErrorResponse'
   parameters:
     organizationId:
       name: organizationId
