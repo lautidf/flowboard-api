@@ -92,7 +92,8 @@ export async function getByOrganization(
 					email: true,
 					name: true
 				}
-			}
+			},
+			role: true
 		}
 	});
 }
