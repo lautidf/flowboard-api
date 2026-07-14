@@ -13,11 +13,11 @@ paths:
               type: object
               properties:
                 name:
-                  $ref: '#/components/schemas/userName'
+                  $ref: '#/components/schemas/UserName'
                 email:
-                  $ref: '#/components/schemas/email'
+                  $ref: '#/components/schemas/Email'
                 password:
-                  $ref: '#/components/schemas/password'
+                  $ref: '#/components/schemas/Password'
               required:
                 - name
                 - email
@@ -28,13 +28,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/user'
+                $ref: '#/components/schemas/User'
         '400':
-          $ref: '#/components/responses/invalidInput'
+          $ref: '#/components/responses/InvalidInput'
         '409':
           description: User already exists
           schema:
-            $ref: '#/components/schemas/errorResponse'
+            $ref: '#/components/schemas/ErrorResponse'
   /login:
     post:
       security: []
@@ -49,9 +49,9 @@ paths:
               type: object
               properties:
                 email:
-                  $ref: '#/components/schemas/email'
+                  $ref: '#/components/schemas/Email'
                 password:
-                  $ref: '#/components/schemas/password'
+                  $ref: '#/components/schemas/Password'
               required:
                 - email
                 - password
@@ -64,16 +64,16 @@ paths:
                 type: object
                 properties:
                   user:
-                    $ref: '#/components/schemas/user'
+                    $ref: '#/components/schemas/User'
                   token:
                     type: string
                     format: JWT
         '400':
-          $ref: '#/components/responses/invalidInput'
+          $ref: '#/components/responses/InvalidInput'
         '401':
           description: Invalid credentials
           schema:
-            $ref: '#/components/schemas/errorResponse'
+            $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
     UserName:

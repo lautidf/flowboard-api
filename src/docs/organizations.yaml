@@ -12,7 +12,7 @@ paths:
               type: object
               properties:
                 name:
-                  $ref: '#/components/schemas/organizationName'
+                  $ref: '#/components/schemas/OrganizationName'
               required:
                 - name
       responses:
@@ -24,19 +24,19 @@ paths:
                 type: object
                 properties:
                   id:
-                    $ref: '#/components/schemas/id'
+                    $ref: '#/components/schemas/Id'
                   name:
-                    $ref: '#/components/schemas/organizationName'
+                    $ref: '#/components/schemas/OrganizationName'
         '400':
-          $ref: '#/components/responses/invalidInput'
+          $ref: '#/components/responses/InvalidInput'
         '401':
-          $ref: '#/components/responses/notAuthenticated'
+          $ref: '#/components/responses/NotAuthenticated'
         '409':
           description: Organization already exists
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
     get:
       summary: Get all the organizations the user belongs to
       tags:
@@ -52,11 +52,11 @@ paths:
                   type: object
                   properties:
                     id:
-                      $ref: '#/components/schemas/id'
+                      $ref: '#/components/schemas/Id'
                     name:
-                      $ref: '#/components/schemas/organizationName'
+                      $ref: '#/components/schemas/OrganizationName'
         '401':
-          $ref: '#/components/responses/notAuthenticated'
+          $ref: '#/components/responses/NotAuthenticated'
   /organizations/{organizationId}:
     get:
       summary: Get an organization by ID
@@ -73,13 +73,13 @@ paths:
                 type: object
                 properties:
                   id:
-                    $ref: '#/components/schemas/id'
+                    $ref: '#/components/schemas/Id'
                   name:
-                    $ref: '#/components/schemas/organizationName'
+                    $ref: '#/components/schemas/OrganizationName'
         '401':
-          $ref: '#/components/responses/notAuthenticated'
+          $ref: '#/components/responses/NotAuthenticated'
         '404':
-          $ref: '#/components/responses/organizationNotFound'
+          $ref: '#/components/responses/OrganizationNotFound'
     delete:
       summary: Delete an organization by ID
       tags:
@@ -90,15 +90,15 @@ paths:
         '204':
           description: Organization deleted successfully
         '401':
-          $ref: '#/components/responses/notAuthenticated'
+          $ref: '#/components/responses/NotAuthenticated'
         '403':
-          $ref: '#/components/responses/notAdmin'
+          $ref: '#/components/responses/NotAdmin'
         '404':
           description: Organization not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/errorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
     OrganizationName:
