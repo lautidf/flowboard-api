@@ -21,6 +21,7 @@ export const swaggerSpec = swaggerJSDoc({
 			{ name: 'Memberships' },
 			{ name: 'Projects' },
 			{ name: 'Tasks' },
+			{ name: 'Users' },
 		],
 	},
 	apis: [
