@@ -34,6 +34,24 @@ components:
       enum:
         - MEMBER
         - ADMIN
+    Organization:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        name:
+          $ref: '#/components/schemas/OrganizationName'
+    OrganizationName:
+      type: string
+    Membership:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        organization:
+          $ref: '#/components/schemas/Organization'
+        role:
+          $ref: '#/components/schemas/Role'
   responses:
     BadRequest:
       description: The request is invalid
