@@ -4,6 +4,22 @@ import { ConflictError, NotFoundError } from '../../errors/errors.js';
 import { prisma } from '../../lib/prisma.js';
 import { requireMembership } from './membership.helpers.js';
 
+export async function getByOrganization(organizationId: string, userId: string) {
+	await requireMembership({
+		userId,
+		organizationId,
+		minimumRole: MembershipRole.ADMIN
+	});
+
+	const memberships = await prisma.membership.findMany({
+		where: {
+			organizationId
+		}
+	});
+
+	return memberships;
+}
+
 type UpdateInput = {
 	organizationId: string;
 	memberId: string;
@@ -71,22 +87,6 @@ export async function update({
 
 		throw error;
 	}
-}
-
-export async function getByOrganization(organizationId: string, userId: string) {
-	await requireMembership({
-		userId,
-		organizationId,
-		minimumRole: MembershipRole.ADMIN
-	});
-
-	const memberships = await prisma.membership.findMany({
-		where: {
-			organizationId
-		}
-	});
-
-	return memberships;
 }
 
 type RemoveInput = {
