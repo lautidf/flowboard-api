@@ -16,6 +16,7 @@ export async function getByOrganization(organizationId: string, userId: string) 
 			organizationId
 		},
 		select: {
+			organization: true,
 			user: {
 				select: {
 					id: true,
@@ -23,7 +24,6 @@ export async function getByOrganization(organizationId: string, userId: string) 
 					name: true
 				}
 			},
-			organization: true,
 			role: true
 		}
 	});
@@ -55,6 +55,17 @@ export async function update({
 				userId: memberId,
 				organizationId
 			}
+		},
+		select: {
+			organization: true,
+			user: {
+				select: {
+					id: true,
+					email: true,
+					name: true
+				}
+			},
+			role: true
 		}
 	});
 
@@ -84,8 +95,21 @@ export async function update({
 			},
 			data: {
 				role: updatedRole
+			},
+			select: {
+				organization: true,
+				user: {
+					select: {
+						id: true,
+						email: true,
+						name: true
+					}
+				},
+				role: true
 			}
 		});
+
+		console.log(JSON.stringify(membership, null, 2));
 
 		return membership;
 	} catch (error) {
