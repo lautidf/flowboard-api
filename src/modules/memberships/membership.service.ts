@@ -14,6 +14,17 @@ export async function getByOrganization(organizationId: string, userId: string) 
 	const memberships = await prisma.membership.findMany({
 		where: {
 			organizationId
+		},
+		select: {
+			user: {
+				select: {
+					id: true,
+					email: true,
+					name: true
+				}
+			},
+			organization: true,
+			role: true
 		}
 	});
 
