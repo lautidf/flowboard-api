@@ -19,7 +19,7 @@ jobs:
             -X POST \
             -H "Content-Type: application/json" \
             -d '{"email":"test@example.com","password":"password"}' \
-            https://flowboard-api-d0vn.onrender.com)
+            https://flowboard-api-d0vn.onrender.com/login)
 
           echo "Status: $STATUS"
 
