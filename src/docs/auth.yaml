@@ -36,7 +36,7 @@ paths:
   /login:
     post:
       security: []
-      summary: Login a user
+      summary: Log a user in
       tags:
         - Authentication
       requestBody:
