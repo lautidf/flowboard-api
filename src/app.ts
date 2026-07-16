@@ -1,5 +1,6 @@
-import express, { Request, Response } from 'express';
+import express, { Response } from 'express';
 import swaggerUi from 'swagger-ui-express';
+import path from 'node:path';
 import { authenticateJWT } from './middleware/auth.middleware.js';
 import { organizationRoutes } from './modules/organizations/organization.routes.js';
 import { errorHandler, notExistentRouteHandler } from './middleware/error.middleware.js';
@@ -11,14 +12,16 @@ import { membershipRoutes } from './modules/memberships/membership.routes.js';
 import { userRoutes } from './modules/users/user.routes.js';
 import { swaggerSpec } from './docs/openapi.js';
 
-
 export const app = express();
+
+app.use(express.static('public'));
 
 app.use(
   '/docs',
   swaggerUi.serve,
   swaggerUi.setup(swaggerSpec, {
 		customSiteTitle: 'FlowBoard API',
+		customfavIcon: 'favicon.png',
     swaggerOptions: {
       defaultModelsExpandDepth: -1,
     },
