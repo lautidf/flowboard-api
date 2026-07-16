@@ -283,7 +283,8 @@ export async function remove(taskId: string, userId: string) {
 	await requireMembership({
 		organizationId,
 		userId,
-		minimumRole: MembershipRole.ADMIN
+		minimumRole: MembershipRole.ADMIN,
+		notMemberErrorMessage: 'Task not found'
 	});
 
 	try {

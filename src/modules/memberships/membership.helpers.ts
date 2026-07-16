@@ -6,11 +6,13 @@ type RequireMembershipInput = {
 	userId: string;
 	organizationId: string;
 	minimumRole?: MembershipRole;
+	notMemberErrorMessage?: string;
 };
 export async function requireMembership({
 	userId,
 	organizationId,
 	minimumRole = MembershipRole.MEMBER,
+	notMemberErrorMessage = 'Organization not found'
 }: RequireMembershipInput) {
 	const membership = await prisma.membership.findUnique({
 		where: {
@@ -22,7 +24,7 @@ export async function requireMembership({
 	});
 
 	if (!membership) {
-		throw new NotFoundError('Organization not found');
+		throw new NotFoundError(notMemberErrorMessage);
 	}
 
 	if(
