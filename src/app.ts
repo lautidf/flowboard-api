@@ -18,6 +18,7 @@ app.use(
   '/docs',
   swaggerUi.serve,
   swaggerUi.setup(swaggerSpec, {
+		customSiteTitle: 'FlowBoard API',
     swaggerOptions: {
       defaultModelsExpandDepth: -1,
     },
