@@ -17,6 +17,8 @@ paths:
                   type: string
                 description:
                   type: string
+              required:
+                - title
       responses:
         '201':
           description: Task created successfully

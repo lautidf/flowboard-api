@@ -40,6 +40,8 @@ paths:
               properties:
                 role:
                   $ref: '#/components/schemas/Role'
+              required:
+                - role
       responses:
         '200':
           description: The updated membership
