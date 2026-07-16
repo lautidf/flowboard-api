@@ -82,13 +82,13 @@ paths:
                         id:
                           $ref: '#/components/schemas/Id'
                         title:
-                          type: string
+                          $ref: '#/components/schemas/TaskTitle'
                         status:
-                          type: string
+                          $ref: '#/components/schemas/TaskStatus'
                         priority:
-                          type: string
+                          $ref: '#/components/schemas/TaskPriority'
                         position:
-                          type: integer
+                          $ref: '#/components/schemas/TaskPosition'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -127,10 +127,3 @@ components:
           $ref: '#/components/schemas/ProjectName'
         organizationId:
           $ref: '#/components/schemas/Id'
-  parameters:
-    projectId:
-      name: projectId
-      in: path
-      required: true
-      schema:
-        $ref: '#/components/schemas/Id'
