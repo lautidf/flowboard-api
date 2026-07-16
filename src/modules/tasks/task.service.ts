@@ -191,7 +191,7 @@ export async function update({
 	const [ membership ] = currentTask.project.organization.memberships;
 
 	if (!membership) {
-		throw new ForbiddenError('User is not a member of the organization')
+		throw new NotFoundError('Task not found');
 	}
 
 	const { role } = membership;
