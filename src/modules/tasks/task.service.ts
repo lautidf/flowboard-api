@@ -119,6 +119,9 @@ export async function getOne(taskId: string, userId: string) {
 					organizationId: true
 				}
 			}
+		},
+		omit: {
+			creatorId: true
 		}
 	});
 
