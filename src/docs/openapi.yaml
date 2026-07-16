@@ -52,22 +52,6 @@ components:
           $ref: '#/components/schemas/Organization'
         role:
           $ref: '#/components/schemas/Role'
-    TaskTitle:
-      type: string
-    TaskStatus:
-      type: string
-      enum:
-        - TODO
-        - IN_PROGRESS
-        - DONE
-    TaskPriority:
-      type: string
-      enum:
-        - LOW
-        - MEDIUM
-        - HIGH
-    TaskPosition:
-      type: integer
   responses:
     BadRequest:
       description: The request is invalid

@@ -74,21 +74,6 @@ paths:
                     $ref: '#/components/schemas/ProjectName'
                   organizationId:
                     $ref: '#/components/schemas/Id'
-                  tasks:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          $ref: '#/components/schemas/Id'
-                        title:
-                          $ref: '#/components/schemas/TaskTitle'
-                        status:
-                          $ref: '#/components/schemas/TaskStatus'
-                        priority:
-                          $ref: '#/components/schemas/TaskPriority'
-                        position:
-                          $ref: '#/components/schemas/TaskPosition'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':

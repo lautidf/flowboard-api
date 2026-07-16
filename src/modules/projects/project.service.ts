@@ -60,17 +60,6 @@ export async function getOne(id: string, userId: string) {
 	const project = await prisma.project.findUnique({
 		where: {
 			id
-		},
-		include: {
-			tasks: {
-				select: {
-					id: true,
-					title: true,
-					status: true,
-					priority: true,
-					position: true,
-				}
-			}
 		}
 	});
 	

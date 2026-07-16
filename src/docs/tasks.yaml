@@ -152,6 +152,26 @@ components:
       oneOf:
         - $ref: '#/components/schemas/Id'
         - "null"
+    TaskTitle:
+      type: string
+    TaskDescription:
+      type:
+        - string
+        - "null"
+    TaskStatus:
+      type: string
+      enum:
+        - TODO
+        - IN_PROGRESS
+        - DONE
+    TaskPriority:
+      type: string
+      enum:
+        - LOW
+        - MEDIUM
+        - HIGH
+    TaskPosition:
+      type: integer
     Task:
       type: object
       properties:
@@ -160,9 +180,7 @@ components:
         title:
           $ref: '#/components/schemas/TaskTitle'
         description:
-          type:
-            - string
-            - "null"
+          $ref: '#/components/schemas/TaskDescription'
         status:
           $ref: '#/components/schemas/TaskStatus'
         priority:
