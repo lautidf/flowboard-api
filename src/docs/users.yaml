@@ -1,0 +1,13 @@
+paths:
+  /me:
+    delete:
+      summary: Delete the current user
+      tags:
+        - Users
+      responses:
+        '204':
+          description: User deleted successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
