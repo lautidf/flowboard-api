@@ -2,7 +2,7 @@ import { prisma } from '../../lib/prisma.js';
 import { NotFoundError } from '../../errors/errors.js';
 import { requireMembership } from '../memberships/membership.helpers.js';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
-import { MembershipRole } from '../../generated/prisma/enums.js';
+import { MembershipRole, Priority } from '../../generated/prisma/enums.js';
 
 type CreateProjectInput = {
 	name: string;
@@ -61,6 +61,17 @@ export async function getOne(id: string, userId: string) {
 		where: {
 			id
 		},
+		include: {
+			tasks: {
+				select: {
+					id: true,
+					title: true,
+					status: true,
+					priority: true,
+					position: true,
+				}
+			}
+		}
 	});
 	
 	if (!project) {
