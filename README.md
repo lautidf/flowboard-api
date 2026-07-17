@@ -205,6 +205,7 @@ npm install
 ```env
 DATABASE_URL=
 JWT_SECRET=
+API_URL=""
 ```
 
 ### Database
