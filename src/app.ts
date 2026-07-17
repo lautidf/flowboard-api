@@ -20,8 +20,8 @@ app.use(
   '/docs',
   swaggerUi.serve,
   swaggerUi.setup(swaggerSpec, {
-		customSiteTitle: 'FlowBoard API',
-		customfavIcon: '/favicon.png',
+    customSiteTitle: 'FlowBoard API',
+    customfavIcon: '/favicon.png',
     swaggerOptions: {
       defaultModelsExpandDepth: -1,
     },
@@ -31,7 +31,7 @@ app.use(
 app.use(express.json());
 
 app.get('/', (_req, res: Response) => {
-	res.redirect('/docs');
+  res.redirect('/docs');
 });
 
 app.use('/', authRoutes);

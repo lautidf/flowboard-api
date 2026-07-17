@@ -5,244 +5,244 @@ import { prisma } from '../../lib/prisma.js';
 import { requireMembership } from './membership.helpers.js';
 
 export async function getByOrganization(organizationId: string, userId: string) {
-	await requireMembership({
-		userId,
-		organizationId,
-		minimumRole: MembershipRole.ADMIN
-	});
+  await requireMembership({
+    userId,
+    organizationId,
+    minimumRole: MembershipRole.ADMIN
+  });
 
-	const memberships = await prisma.membership.findMany({
-		where: {
-			organizationId
-		},
-		select: {
-			organization: true,
-			user: {
-				select: {
-					id: true,
-					email: true,
-					name: true
-				}
-			},
-			role: true
-		}
-	});
+  const memberships = await prisma.membership.findMany({
+    where: {
+      organizationId
+    },
+    select: {
+      organization: true,
+      user: {
+        select: {
+          id: true,
+          email: true,
+          name: true
+        }
+      },
+      role: true
+    }
+  });
 
-	return memberships;
+  return memberships;
 }
 
 type UpdateInput = {
-	organizationId: string;
-	memberId: string;
-	role: MembershipRole;
-	userId: string;
+  organizationId: string;
+  memberId: string;
+  role: MembershipRole;
+  userId: string;
 }
 export async function update({
-	organizationId,
-	memberId,
-	role: updatedRole,
-	userId
+  organizationId,
+  memberId,
+  role: updatedRole,
+  userId
 }: UpdateInput) {
-	await requireMembership({
-		userId,
-		organizationId,
-		minimumRole: MembershipRole.ADMIN
-	});
-		
-	const currentMembership = await prisma.membership.findUnique({
-		where: {
-			userId_organizationId: {
-				userId: memberId,
-				organizationId
-			}
-		},
-		select: {
-			organization: true,
-			user: {
-				select: {
-					id: true,
-					email: true,
-					name: true
-				}
-			},
-			role: true
-		}
-	});
+  await requireMembership({
+    userId,
+    organizationId,
+    minimumRole: MembershipRole.ADMIN
+  });
+    
+  const currentMembership = await prisma.membership.findUnique({
+    where: {
+      userId_organizationId: {
+        userId: memberId,
+        organizationId
+      }
+    },
+    select: {
+      organization: true,
+      user: {
+        select: {
+          id: true,
+          email: true,
+          name: true
+        }
+      },
+      role: true
+    }
+  });
 
-	if (!currentMembership) {
-		throw new NotFoundError('Membership not found');
-	}
+  if (!currentMembership) {
+    throw new NotFoundError('Membership not found');
+  }
 
-	const currentRole = currentMembership.role;
+  const currentRole = currentMembership.role;
 
-	if (updatedRole === currentRole) {
-		return currentMembership;
-	}
+  if (updatedRole === currentRole) {
+    return currentMembership;
+  }
 
-	if (await wouldLeaveNoAdmins(currentRole, organizationId)) {
-		throw new ConflictError(
-			'The last admin in the organization cannot be demoted'
-		);
-	}
+  if (await wouldLeaveNoAdmins(currentRole, organizationId)) {
+    throw new ConflictError(
+      'The last admin in the organization cannot be demoted'
+    );
+  }
 
-	try {
-		const membership = await prisma.membership.update({
-			where: {
-				userId_organizationId: {
-					userId: memberId,
-					organizationId
-				}
-			},
-			data: {
-				role: updatedRole
-			},
-			select: {
-				organization: true,
-				user: {
-					select: {
-						id: true,
-						email: true,
-						name: true
-					}
-				},
-				role: true
-			}
-		});
+  try {
+    const membership = await prisma.membership.update({
+      where: {
+        userId_organizationId: {
+          userId: memberId,
+          organizationId
+        }
+      },
+      data: {
+        role: updatedRole
+      },
+      select: {
+        organization: true,
+        user: {
+          select: {
+            id: true,
+            email: true,
+            name: true
+          }
+        },
+        role: true
+      }
+    });
 
-		console.log(JSON.stringify(membership, null, 2));
+    console.log(JSON.stringify(membership, null, 2));
 
-		return membership;
-	} catch (error) {
-		if (
-			error instanceof PrismaClientKnownRequestError &&
-			error.code === 'P2025'
-		) {
-			throw new NotFoundError('Membership not found');
-		}
+    return membership;
+  } catch (error) {
+    if (
+      error instanceof PrismaClientKnownRequestError &&
+      error.code === 'P2025'
+    ) {
+      throw new NotFoundError('Membership not found');
+    }
 
-		throw error;
-	}
+    throw error;
+  }
 }
 
 type RemoveInput = {
-	organizationId: string;
-	memberId: string;
-	userId: string;
+  organizationId: string;
+  memberId: string;
+  userId: string;
 }
 export async function remove({
-	organizationId,
-	memberId,
-	userId
+  organizationId,
+  memberId,
+  userId
 }: RemoveInput) {
-	await requireMembership({
-		userId,
-		organizationId,
-		minimumRole: MembershipRole.ADMIN
-	});
+  await requireMembership({
+    userId,
+    organizationId,
+    minimumRole: MembershipRole.ADMIN
+  });
 
-	const membership = await prisma.membership.findUnique({
-		where: {
-			userId_organizationId: {
-				userId: memberId,
-				organizationId
-			}
-		}
-	});
-	
-	if (!membership) {
-		throw new NotFoundError('Membership not found');
-	}
+  const membership = await prisma.membership.findUnique({
+    where: {
+      userId_organizationId: {
+        userId: memberId,
+        organizationId
+      }
+    }
+  });
+  
+  if (!membership) {
+    throw new NotFoundError('Membership not found');
+  }
 
-	if (await wouldLeaveNoAdmins(membership.role, organizationId)) {
-		throw new ConflictError(
-			'The last admin in the organization cannot be removed'
-		);		
-	}
+  if (await wouldLeaveNoAdmins(membership.role, organizationId)) {
+    throw new ConflictError(
+      'The last admin in the organization cannot be removed'
+    );    
+  }
 
-	try {
-		await prisma.membership.delete({
-			where: {
-				userId_organizationId: {
-					userId: memberId,
-					organizationId
-				}
-			}
-		});
-	} catch (error) {
-		if (
-			error instanceof PrismaClientKnownRequestError &&
-			error.code === 'P2025'
-		) {
-			throw new NotFoundError('Membership not found');
-		}
+  try {
+    await prisma.membership.delete({
+      where: {
+        userId_organizationId: {
+          userId: memberId,
+          organizationId
+        }
+      }
+    });
+  } catch (error) {
+    if (
+      error instanceof PrismaClientKnownRequestError &&
+      error.code === 'P2025'
+    ) {
+      throw new NotFoundError('Membership not found');
+    }
 
-		throw error;
-	}
+    throw error;
+  }
 }
 
 export async function leave(organizationId: string, userId: string) {
-	await requireMembership({ userId, organizationId });
+  await requireMembership({ userId, organizationId });
 
-	const membership = await prisma.membership.findUnique({
-		where: {
-			userId_organizationId: {
-				userId,
-				organizationId
-			}
-		}
-	});
-	
-	if (!membership) {
-		throw new NotFoundError('Membership not found');
-	}
+  const membership = await prisma.membership.findUnique({
+    where: {
+      userId_organizationId: {
+        userId,
+        organizationId
+      }
+    }
+  });
+  
+  if (!membership) {
+    throw new NotFoundError('Membership not found');
+  }
 
-	if (await wouldLeaveNoAdmins(membership.role, organizationId)) {
-		throw new ConflictError(
-			'The last admin in the organization cannot leave'
-		);
-	}
+  if (await wouldLeaveNoAdmins(membership.role, organizationId)) {
+    throw new ConflictError(
+      'The last admin in the organization cannot leave'
+    );
+  }
 
-	try {
-		await prisma.membership.delete({
-			where: {
-				userId_organizationId: {
-					userId,
-					organizationId
-				}
-			}
-		});
-	} catch (error) {
-		if (
-			error instanceof PrismaClientKnownRequestError &&
-			error.code === 'P2025'
-		) {
-			throw new NotFoundError('Membership not found');
-		}
+  try {
+    await prisma.membership.delete({
+      where: {
+        userId_organizationId: {
+          userId,
+          organizationId
+        }
+      }
+    });
+  } catch (error) {
+    if (
+      error instanceof PrismaClientKnownRequestError &&
+      error.code === 'P2025'
+    ) {
+      throw new NotFoundError('Membership not found');
+    }
 
-		throw error;
-	}
+    throw error;
+  }
 }
 
 export const membershipService = {
-	update,
-	getByOrganization,
-	delete: remove,
-	leave,
+  update,
+  getByOrganization,
+  delete: remove,
+  leave,
 };
 
 async function wouldLeaveNoAdmins(
-	role: MembershipRole,
-	organizationId: string
+  role: MembershipRole,
+  organizationId: string
 ) {
-	if (role === MembershipRole.ADMIN) {
-		const adminCount = await prisma.membership.count({
-			where: {
-				organizationId,
-				role: MembershipRole.ADMIN
-			}
-		});
-			
-		return adminCount <= 1;
-	}
-	return false;
+  if (role === MembershipRole.ADMIN) {
+    const adminCount = await prisma.membership.count({
+      where: {
+        organizationId,
+        role: MembershipRole.ADMIN
+      }
+    });
+      
+    return adminCount <= 1;
+  }
+  return false;
 }

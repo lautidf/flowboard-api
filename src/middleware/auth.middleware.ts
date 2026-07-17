@@ -25,18 +25,18 @@ export function authenticateJWT(
     const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
 
     req.user = {
-			id: decoded.sub,
-			email: decoded.email,
-		};
+      id: decoded.sub,
+      email: decoded.email,
+    };
 
     next();
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
-			throw new UnauthorizedError('Expired token');
+      throw new UnauthorizedError('Expired token');
     }
-		if (error instanceof jwt.JsonWebTokenError) {
-			throw new UnauthorizedError('Invalid token');
-		}
+    if (error instanceof jwt.JsonWebTokenError) {
+      throw new UnauthorizedError('Invalid token');
+    }
     throw error;
   }
 }

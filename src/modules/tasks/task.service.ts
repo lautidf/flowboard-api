@@ -6,309 +6,309 @@ import { requireMembership } from '../memberships/membership.helpers.js';
 import { getOrganizationId } from '../projects/project.helpers.js';
 
 type CreateInput = {
-	projectId: string;
-	title: string;
-	description?: string | null;
-	userId: string;
+  projectId: string;
+  title: string;
+  description?: string | null;
+  userId: string;
 };
 export async function create({
-	projectId,
-	title,
-	description,
-	userId
+  projectId,
+  title,
+  description,
+  userId
 }: CreateInput) {
-	const organizationId = await getOrganizationId(projectId);
+  const organizationId = await getOrganizationId(projectId);
 
-	await requireMembership({
-		organizationId,
-		userId
-	});
+  await requireMembership({
+    organizationId,
+    userId
+  });
 
-	try {
-		const maxPosition = await prisma.task.aggregate({
-			where: {
-				projectId
-			},
-			_max: {
-				position: true
-			}
-		});
-	
-		const position = (maxPosition._max.position ?? 0) + 100;
-	
-		const task = await prisma.task.create({
-			data: {
-				title,
-				description,
-				projectId,
-				position,
-				creatorId: userId
-			},
-			omit: {
-				creatorId: true
-			}
-		});
-	
-		return task;
-	} catch (error) {
-		if (
-			error instanceof PrismaClientKnownRequestError
-			&& error.code === 'P2003'
-		) {
-			throw new NotFoundError('Project not found');
-		}
+  try {
+    const maxPosition = await prisma.task.aggregate({
+      where: {
+        projectId
+      },
+      _max: {
+        position: true
+      }
+    });
+  
+    const position = (maxPosition._max.position ?? 0) + 100;
+  
+    const task = await prisma.task.create({
+      data: {
+        title,
+        description,
+        projectId,
+        position,
+        creatorId: userId
+      },
+      omit: {
+        creatorId: true
+      }
+    });
+  
+    return task;
+  } catch (error) {
+    if (
+      error instanceof PrismaClientKnownRequestError
+      && error.code === 'P2003'
+    ) {
+      throw new NotFoundError('Project not found');
+    }
 
-		throw error;
-	}
+    throw error;
+  }
 }
 
 type GetByProjectInput = {
-	projectId: string;
-	userId: string;
-	priority?: Priority;
-	assignedToMe?: boolean;
-	unassigned?: boolean;
+  projectId: string;
+  userId: string;
+  priority?: Priority;
+  assignedToMe?: boolean;
+  unassigned?: boolean;
 };
 export async function getByProject({
-	projectId,
-	userId,
-	priority,
-	assignedToMe,
-	unassigned
+  projectId,
+  userId,
+  priority,
+  assignedToMe,
+  unassigned
 }: GetByProjectInput) {
-	if (assignedToMe && unassigned) {
-		throw new ConflictError(
-			'Cannot filter tasks by both assignedToMe and unassigned'
-		);
-	}
-	
-	const organizationId = await getOrganizationId(projectId);
+  if (assignedToMe && unassigned) {
+    throw new ConflictError(
+      'Cannot filter tasks by both assignedToMe and unassigned'
+    );
+  }
+  
+  const organizationId = await getOrganizationId(projectId);
 
-	await requireMembership({
-		organizationId,
-		userId
-	});
-	
-	const tasks = await prisma.task.findMany({
-		where: {
-			projectId,
-			priority,
-			assigneeId: assignedToMe
-				? userId
-				: unassigned ? null : undefined
-		},
-		orderBy: {
-			position: 'asc'
-		},
-		omit: {
-			creatorId: true
-		}
-	});
+  await requireMembership({
+    organizationId,
+    userId
+  });
+  
+  const tasks = await prisma.task.findMany({
+    where: {
+      projectId,
+      priority,
+      assigneeId: assignedToMe
+        ? userId
+        : unassigned ? null : undefined
+    },
+    orderBy: {
+      position: 'asc'
+    },
+    omit: {
+      creatorId: true
+    }
+  });
 
-	return tasks;
+  return tasks;
 }
 
 export async function getOne(taskId: string, userId: string) {
-	const task = await prisma.task.findUnique({
-		where: {
-			id: taskId
-		},
-		include: {
-			project: {
-				select: {
-					organizationId: true
-				}
-			}
-		},
-		omit: {
-			creatorId: true
-		}
-	});
+  const task = await prisma.task.findUnique({
+    where: {
+      id: taskId
+    },
+    include: {
+      project: {
+        select: {
+          organizationId: true
+        }
+      }
+    },
+    omit: {
+      creatorId: true
+    }
+  });
 
-	if (!task) {
-		throw new NotFoundError('Task not found');
-	}
+  if (!task) {
+    throw new NotFoundError('Task not found');
+  }
 
-	await requireMembership({
-		organizationId: task.project.organizationId,
-		userId
-	});
+  await requireMembership({
+    organizationId: task.project.organizationId,
+    userId
+  });
 
-	const { project, ...taskWithoutProject } = task;
+  const { project, ...taskWithoutProject } = task;
 
-	return taskWithoutProject;
+  return taskWithoutProject;
 }
 
 type UpdateInput = {
-	taskId: string;
-	title?: string;
-	description?: string | null;
-	status?: Status;
-	priority?: Priority;
-	position?: number;
-	assigneeId?: string | null;
-	userId: string;
+  taskId: string;
+  title?: string;
+  description?: string | null;
+  status?: Status;
+  priority?: Priority;
+  position?: number;
+  assigneeId?: string | null;
+  userId: string;
 };
 export async function update({
-	taskId,
-	title,
-	description,
-	status,
-	priority,
-	position,
-	assigneeId,
-	userId
+  taskId,
+  title,
+  description,
+  status,
+  priority,
+  position,
+  assigneeId,
+  userId
 }: UpdateInput) {
-	const currentTask = await prisma.task.findUnique({
-		where: {
-			id: taskId
-		},
-		select: {
-			assigneeId: true,
-			project: {
-				select: {
-					organization: {
-						select: {
-							memberships: {
-								where: {
-									userId
-								},
-								select: {
-									role: true
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	});
+  const currentTask = await prisma.task.findUnique({
+    where: {
+      id: taskId
+    },
+    select: {
+      assigneeId: true,
+      project: {
+        select: {
+          organization: {
+            select: {
+              memberships: {
+                where: {
+                  userId
+                },
+                select: {
+                  role: true
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  });
 
-	if (!currentTask) {
-		throw new NotFoundError('Task not found');
-	}
+  if (!currentTask) {
+    throw new NotFoundError('Task not found');
+  }
 
-	const [ membership ] = currentTask.project.organization.memberships;
+  const [ membership ] = currentTask.project.organization.memberships;
 
-	if (!membership) {
-		throw new NotFoundError('Task not found');
-	}
+  if (!membership) {
+    throw new NotFoundError('Task not found');
+  }
 
-	const { role } = membership;
-	const { assigneeId: currentAssigneeId } = currentTask;
+  const { role } = membership;
+  const { assigneeId: currentAssigneeId } = currentTask;
 
-	const isAdmin = role === MembershipRole.ADMIN;
-	const isAssignee = currentAssigneeId === userId;
+  const isAdmin = role === MembershipRole.ADMIN;
+  const isAssignee = currentAssigneeId === userId;
 
-	const updatesAssigneeFields = (
-		title !== undefined ||
-		description !== undefined ||
-		status !== undefined
-	);
+  const updatesAssigneeFields = (
+    title !== undefined ||
+    description !== undefined ||
+    status !== undefined
+  );
 
-	const updatesAdminFields = (
-		priority !== undefined ||
-		assigneeId !== undefined
-	);
+  const updatesAdminFields = (
+    priority !== undefined ||
+    assigneeId !== undefined
+  );
 
-	if (updatesAssigneeFields) {
-		if (!isAdmin && !isAssignee) {
-			throw new ForbiddenError(
-				'Only admins or assignee can update a task\'s title, description or status'
-			);
-		}
-	}
+  if (updatesAssigneeFields) {
+    if (!isAdmin && !isAssignee) {
+      throw new ForbiddenError(
+        'Only admins or assignee can update a task\'s title, description or status'
+      );
+    }
+  }
 
-	if (updatesAdminFields) {
-		if (!isAdmin) {
-			throw new ForbiddenError(
-				'Only admins can update a task\'s priority or assignee'
-			);
-		}
-	}	
-	
-	try {
-		const updatedTask = await prisma.task.update({
-			where: {
-				id: taskId,
-			},
-			data: {
-				title,
-				description,
-				status,
-				priority,
-				position,
-				assigneeId
-			},
-			omit: {
-				creatorId: true
-			}
-		});
-	
-		return updatedTask;
-	} catch (error) {
-		if (error instanceof PrismaClientKnownRequestError) {
-			switch (error.code) {
-				case 'P2003':
-					throw new NotFoundError('Assignee not found');
-				case 'P2025':
-					throw new NotFoundError('Task not found');
-			}
-		}
+  if (updatesAdminFields) {
+    if (!isAdmin) {
+      throw new ForbiddenError(
+        'Only admins can update a task\'s priority or assignee'
+      );
+    }
+  }  
+  
+  try {
+    const updatedTask = await prisma.task.update({
+      where: {
+        id: taskId,
+      },
+      data: {
+        title,
+        description,
+        status,
+        priority,
+        position,
+        assigneeId
+      },
+      omit: {
+        creatorId: true
+      }
+    });
+  
+    return updatedTask;
+  } catch (error) {
+    if (error instanceof PrismaClientKnownRequestError) {
+      switch (error.code) {
+        case 'P2003':
+          throw new NotFoundError('Assignee not found');
+        case 'P2025':
+          throw new NotFoundError('Task not found');
+      }
+    }
 
-		throw error;
-	}
+    throw error;
+  }
 }
 
 export async function remove(taskId: string, userId: string) {
-	const task = await prisma.task.findUnique({
-		where: {
-			id: taskId
-		},
-		select: {
-			project: {
-				select: {
-					organizationId: true
-				}
-			}
-		}
-	});
+  const task = await prisma.task.findUnique({
+    where: {
+      id: taskId
+    },
+    select: {
+      project: {
+        select: {
+          organizationId: true
+        }
+      }
+    }
+  });
 
-	if (!task) {
-		throw new NotFoundError('Task not found');
-	}
+  if (!task) {
+    throw new NotFoundError('Task not found');
+  }
 
-	const { organizationId } = task.project;
+  const { organizationId } = task.project;
 
-	await requireMembership({
-		organizationId,
-		userId,
-		minimumRole: MembershipRole.ADMIN,
-		notMemberErrorMessage: 'Task not found'
-	});
+  await requireMembership({
+    organizationId,
+    userId,
+    minimumRole: MembershipRole.ADMIN,
+    notMemberErrorMessage: 'Task not found'
+  });
 
-	try {
-		await prisma.task.delete({
-			where: {
-				id: taskId
-			}
-		});
-	} catch (error) {
-		if (
-			error instanceof PrismaClientKnownRequestError
-			&& error.code === 'P2025'
-		) {
-			throw new NotFoundError('Task not found');
-		}
+  try {
+    await prisma.task.delete({
+      where: {
+        id: taskId
+      }
+    });
+  } catch (error) {
+    if (
+      error instanceof PrismaClientKnownRequestError
+      && error.code === 'P2025'
+    ) {
+      throw new NotFoundError('Task not found');
+    }
 
-		throw error;
-	}
+    throw error;
+  }
 }
 
 export const taskService = {
-	create,
-	getByProject,
-	getOne,
-	update,
-	delete: remove,
+  create,
+  getByProject,
+  getOne,
+  update,
+  delete: remove,
 };

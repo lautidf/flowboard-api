@@ -5,103 +5,103 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 import { MembershipRole, Priority } from '../../generated/prisma/enums.js';
 
 type CreateProjectInput = {
-	name: string;
-	organizationId: string;
-	userId: string;
+  name: string;
+  organizationId: string;
+  userId: string;
 };
 export async function create({
-	name,
-	organizationId,
-	userId
+  name,
+  organizationId,
+  userId
 }: CreateProjectInput) {
-	await requireMembership({
-		userId,
-		organizationId,
-		minimumRole: MembershipRole.ADMIN
-	});
+  await requireMembership({
+    userId,
+    organizationId,
+    minimumRole: MembershipRole.ADMIN
+  });
 
-	try {
-		const project = await prisma.project.create({
-			data: {
-				name,
-				organizationId
-			},
-		});
+  try {
+    const project = await prisma.project.create({
+      data: {
+        name,
+        organizationId
+      },
+    });
 
-		return project;
-	} catch (error) {
-		if (
-			error instanceof PrismaClientKnownRequestError
-			&& error.code === 'P2003'
-		) {
-			throw new NotFoundError('Organization not found');
-		}
-		
-		throw error;
-	}	
+    return project;
+  } catch (error) {
+    if (
+      error instanceof PrismaClientKnownRequestError
+      && error.code === 'P2003'
+    ) {
+      throw new NotFoundError('Organization not found');
+    }
+    
+    throw error;
+  }  
 }
 
 export async function getByOrganization(
-	organizationId: string,
-	userId: string
+  organizationId: string,
+  userId: string
 ) {
-	await requireMembership({ userId,	organizationId });
+  await requireMembership({ userId,  organizationId });
 
-	const projects = await prisma.project.findMany({
-		where: {
-			organizationId,
-		},
-	});
+  const projects = await prisma.project.findMany({
+    where: {
+      organizationId,
+    },
+  });
 
-	return projects;
+  return projects;
 }
 
 export async function getOne(id: string, userId: string) {
-	const project = await prisma.project.findUnique({
-		where: {
-			id
-		}
-	});
-	
-	if (!project) {
-		throw new NotFoundError('Project not found');
-	}
+  const project = await prisma.project.findUnique({
+    where: {
+      id
+    }
+  });
+  
+  if (!project) {
+    throw new NotFoundError('Project not found');
+  }
 
-	await requireMembership({
-		userId,
-		organizationId: project.organizationId,
-	});
+  await requireMembership({
+    userId,
+    organizationId: project.organizationId,
+  });
 
-	return project;
+  return project;
 }
 
 export async function remove(id: string, userId: string) {
-	const project = await prisma.project.findUnique({
-		where: {
-			id
-		}
-	});
+  const project = await prisma.project.findUnique({
+    where: {
+      id
+    }
+  });
 
-	if (!project) {
-		throw new NotFoundError('Project not found');
-	}
+  if (!project) {
+    throw new NotFoundError('Project not found');
+  }
 
-	await requireMembership({
-		userId,
-		organizationId: project.organizationId,
-		minimumRole: MembershipRole.ADMIN
-	});
+  await requireMembership({
+    userId,
+    organizationId: project.organizationId,
+    minimumRole: MembershipRole.ADMIN
+  });
 
-	await prisma.project.delete({
-		where: {
-			id
-		},
-	});
+  await prisma.project.delete({
+    where: {
+      id
+    },
+  });
 }
 
 export const projectService = {
-	create,
-	getByOrganization,
-	getOne,
-	delete: remove,
+  create,
+  getByOrganization,
+  getOne,
+  delete: remove,
 };
