@@ -21,7 +21,7 @@ app.use(
   swaggerUi.serve,
   swaggerUi.setup(swaggerSpec, {
 		customSiteTitle: 'FlowBoard API',
-		customfavIcon: 'favicon.png',
+		customfavIcon: '/favicon.png',
     swaggerOptions: {
       defaultModelsExpandDepth: -1,
     },
