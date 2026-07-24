@@ -169,7 +169,8 @@ export async function update({
         select: {
           organization: {
             select: {
-              memberships: {
+              id: true,
+							memberships: {
                 where: {
                   userId
                 },
@@ -225,7 +226,15 @@ export async function update({
         'Only admins can update a task\'s priority or assignee'
       );
     }
-  }  
+  }
+
+	if (assigneeId != undefined) {
+		await requireMembership({
+			organizationId: currentTask.project.organization.id,
+			userId: assigneeId,
+			notMemberErrorMessage: 'Assignee not found'
+		});
+	}
   
   try {
     const updatedTask = await prisma.task.update({
