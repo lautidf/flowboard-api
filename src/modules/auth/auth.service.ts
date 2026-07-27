@@ -1,7 +1,6 @@
 import { PrismaClientKnownRequestError } from '../../generated/prisma/internal/prismaNamespace.js';
 import { ConflictError, UnauthorizedError } from '../../errors/errors.js';
 import { prisma } from '../../lib/prisma.js';
-import argon2 from 'argon2';
 import { hashPassword, verifyPassword } from './password.js';
 import { generateAccessToken } from './jwt.js';
 
