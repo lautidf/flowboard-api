@@ -1,10 +1,9 @@
 // Temporary development auth middleware.
 // Replace with real JWT verification later.
 import { Request, Response, NextFunction } from 'express';
-import {  JWT_SECRET } from '../config/env.js';
-import { UnauthorizedError } from '../errors/errors.js';
 import jwt from 'jsonwebtoken';
-import { JwtPayload } from '../types/auth.types.js';
+import { UnauthorizedError } from '../errors/errors.js';
+import { verifyAccessToken } from '../modules/auth/jwt.js';
 
 export function authenticateJWT(
   req: Request,
@@ -22,7 +21,7 @@ export function authenticateJWT(
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    const decoded = verifyAccessToken(token);
 
     req.user = {
       id: decoded.sub,

@@ -2,9 +2,8 @@ import { PrismaClientKnownRequestError } from '../../generated/prisma/internal/p
 import { ConflictError, UnauthorizedError } from '../../errors/errors.js';
 import { prisma } from '../../lib/prisma.js';
 import argon2 from 'argon2';
-import jwt from 'jsonwebtoken';
-import { JwtPayload } from '../../types/auth.types.js';
-import { JWT_SECRET } from '../../config/env.js';
+import { hashPassword, verifyPassword } from './password.js';
+import { generateAccessToken } from './jwt.js';
 
 type RegisterUserInput = {
   email: string;
@@ -22,7 +21,7 @@ export async function registerUser({
     throw new ConflictError('User with this email already exists');
   }
 
-  const passwordHash = await argon2.hash(password);
+  const passwordHash = await hashPassword(password);
 
   try {
     const user = await prisma.user.create({
@@ -62,18 +61,13 @@ export async function login({ email, password }: LoginInput) {
     throw new UnauthorizedError('Invalid credentials');
   }
 
-  const passwordIsCorrect = await argon2.verify(user.passwordHash, password);
+  const passwordIsCorrect = await verifyPassword(user.passwordHash, password);
 
   if (!passwordIsCorrect) {
     throw new UnauthorizedError('Invalid credentials');
   }
 
-  const payload: JwtPayload = {
-    sub: user.id,
-    email: user.email,
-  };
-
-  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+  const token = generateAccessToken(user.id, user.email);
 
   return {
     user: {
