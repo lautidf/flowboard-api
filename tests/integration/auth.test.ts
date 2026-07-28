@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { app } from '../../src/app';
 import { prisma } from '../../src/lib/prisma';
 import { hashPassword } from '../../src/modules/auth/password';
+import { createUser } from '../helpers/user';
 
 describe('POST /register', () => {
   it('creates a new user', async () => {
@@ -23,15 +24,7 @@ describe('POST /register', () => {
   });
 
   it('rejects duplicate emails', async () => {
-		const passwordHash = await hashPassword('Password123!');
-
-		const existingUser = await prisma.user.create({
-			data: {
-				email: 'test@example.com',
-				name: 'Test User',
-				passwordHash,
-			}
-		});
+		const existingUser = await createUser({ name: 'Test User 1' })
 
 		const duplicateUserName = 'Test User 2';
 
@@ -40,14 +33,14 @@ describe('POST /register', () => {
 			.send({
 				email: existingUser.email,
 				name: duplicateUserName,
-				password: 'testpassword'
+				password: 'Password123!'
 			})
 			.expect(409)
 
-      const user = await prisma.user.findFirst({
-        where: { name: duplicateUserName }
-      });
+		const user = await prisma.user.findFirst({
+			where: { name: duplicateUserName }
+		});
 
-      expect(user).toBeNull();
+		expect(user).toBeNull();
 	});
 });
