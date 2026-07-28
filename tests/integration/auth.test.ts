@@ -11,7 +11,7 @@ describe('POST /register', () => {
       .send({
         email: 'test@example.com',
         name: 'Test User',
-        password: 'testpassword'
+        password: 'Password123!'
       })
       .expect(201);
 
@@ -23,7 +23,7 @@ describe('POST /register', () => {
   });
 
   it('rejects duplicate emails', async () => {
-		const passwordHash = await hashPassword('testpassword');
+		const passwordHash = await hashPassword('Password123!');
 
 		const existingUser = await prisma.user.create({
 			data: {
