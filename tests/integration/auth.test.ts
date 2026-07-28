@@ -24,23 +24,23 @@ describe('POST /register', () => {
   });
 
   it('rejects duplicate emails', async () => {
-		const existingUser = await createUser({ name: 'Test User 1' })
+    const existingUser = await createUser({ name: 'Test User 1' })
 
-		const duplicateUserName = 'Test User 2';
+    const duplicateUserName = 'Test User 2';
 
-		await request(app)
-			.post('/register')
-			.send({
-				email: existingUser.email,
-				name: duplicateUserName,
-				password: 'Password123!'
-			})
-			.expect(409)
+    await request(app)
+      .post('/register')
+      .send({
+        email: existingUser.email,
+        name: duplicateUserName,
+        password: 'Password123!'
+      })
+      .expect(409)
 
-		const user = await prisma.user.findFirst({
-			where: { name: duplicateUserName }
-		});
+    const user = await prisma.user.findFirst({
+      where: { name: duplicateUserName }
+    });
 
-		expect(user).toBeNull();
-	});
+    expect(user).toBeNull();
+  });
 });

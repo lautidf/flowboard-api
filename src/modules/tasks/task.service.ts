@@ -170,7 +170,7 @@ export async function update({
           organization: {
             select: {
               id: true,
-							memberships: {
+              memberships: {
                 where: {
                   userId
                 },
@@ -228,13 +228,13 @@ export async function update({
     }
   }
 
-	if (assigneeId != undefined) {
-		await requireMembership({
-			organizationId: currentTask.project.organization.id,
-			userId: assigneeId,
-			notMemberErrorMessage: 'Assignee not found'
-		});
-	}
+  if (assigneeId != undefined) {
+    await requireMembership({
+      organizationId: currentTask.project.organization.id,
+      userId: assigneeId,
+      notMemberErrorMessage: 'Assignee not found'
+    });
+  }
   
   try {
     const updatedTask = await prisma.task.update({

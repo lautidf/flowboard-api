@@ -8,8 +8,8 @@ type CreateUserOptions = Partial<{
   password: string;
 }>
 export async function createUser(options: CreateUserOptions = {}) {
-	const email = options.email ?? `${randomString()}@example.com`;
-	const name = options.name ?? 'Test User';
+  const email = options.email ?? `${randomString()}@example.com`;
+  const name = options.name ?? 'Test User';
   const passwordHash = await hashPassword(options.password ?? 'Password123!');
 
   const user = await prisma.user.create({
@@ -19,6 +19,6 @@ export async function createUser(options: CreateUserOptions = {}) {
       passwordHash,
     }
   });
-	
-	return user;
+  
+  return user;
 }

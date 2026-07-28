@@ -9,15 +9,15 @@ export function generateAccessToken(userId: string, email: string) {
   };
 
   const token = jwt.sign(
-		payload,
-		JWT_SECRET,
-		{ expiresIn: '7d' }
-	);
+    payload,
+    JWT_SECRET,
+    { expiresIn: '7d' }
+  );
 
-	return token;
+  return token;
 }
 
 export function verifyAccessToken(token:string) {
-	const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload
-	return decoded;
+  const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload
+  return decoded;
 }
