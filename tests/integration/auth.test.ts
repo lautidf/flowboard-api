@@ -2,7 +2,6 @@ import request from 'supertest';
 import { describe, expect, it } from 'vitest'
 import { app } from '../../src/app';
 import { prisma } from '../../src/lib/prisma';
-import { hashPassword } from '../../src/modules/auth/password';
 import { createUser } from '../helpers/user';
 
 describe('POST /register', () => {
@@ -42,5 +41,23 @@ describe('POST /register', () => {
     });
 
     expect(user).toBeNull();
+  });
+});
+
+describe('POST /login', () => {
+  it('returns a JWT for valid credentials', async () => {
+    const password = 'Password123!';
+
+    const user = await createUser({ password });
+
+    const response = await request(app)
+      .post('/login')
+      .send({
+        email: user.email,
+        password,
+      })
+      .expect(200)
+
+    expect(response.body).toHaveProperty('token');
   });
 });
