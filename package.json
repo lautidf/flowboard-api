@@ -11,7 +11,7 @@
     "prisma:migrate:dev": "prisma migrate dev && prisma generate",
     "prisma:migrate:deploy": "dotenv -e .env.production prisma migrate deploy",
     "prisma:migrate:test": "dotenv -e .env.test prisma migrate dev",
-    "test": "dotenv -e .env.test vitest",
+    "test:integration": "dotenv -e .env.test -- vitest --no-file-parallelism tests/integration",
     "test:reset-db": "dotenv -e .env.test prisma migrate reset --force",
     "postinstall": "prisma generate"
   },
