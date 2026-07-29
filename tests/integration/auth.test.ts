@@ -60,4 +60,19 @@ describe('POST /login', () => {
 
     expect(response.body).toHaveProperty('token');
   });
+
+  it('rejects invalid credentials', async () => {
+    const validPassword = 'validPassword123!';
+    const invalidPassword = 'invalidPassword123!';
+
+    const user = await createUser({ password: validPassword });
+
+    await request(app)
+      .post('/login')
+      .send({
+        email: user.email,
+        password: invalidPassword,
+      })
+      .expect(401)
+  });
 });
