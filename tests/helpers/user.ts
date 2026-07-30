@@ -1,5 +1,7 @@
+import { MembershipRole } from '../../src/generated/prisma/enums';
 import { prisma } from '../../src/lib/prisma';
 import { hashPassword } from '../../src/modules/auth/password';
+import { createMembership } from './membership';
 import { randomString } from './random';
 
 type CreateUserOptions = Partial<{
@@ -20,5 +22,20 @@ export async function createUser(options: CreateUserOptions = {}) {
     }
   });
   
+  return user;
+}
+
+export async function createMember(
+  organizationId: string,
+  role: MembershipRole
+) {
+  const user = await createUser();
+  
+  await createMembership({
+    userId: user.id,
+    organizationId,
+    role
+  });
+
   return user;
 }

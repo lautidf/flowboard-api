@@ -1,9 +1,9 @@
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 import { app } from '../../src/app';
-import { createAuthenticatedUser } from '../helpers/auth';
+import { createAuthenticatedMember, createAuthenticatedUser } from '../helpers/auth';
 import { prisma } from '../../src/lib/prisma';
-import { createUser } from '../helpers/user';
+import { createMember, createUser } from '../helpers/user';
 import { createOrganization } from '../helpers/organization';
 import { createMembership } from '../helpers/membership';
 import { MembershipRole } from '../../src/generated/prisma/enums';
@@ -14,20 +14,12 @@ describe('PATCH /organizations/:organizationId/memberships/:userId', () => {
     const newRole = MembershipRole.ADMIN;
     
     const organization = await createOrganization();
-    const { user: admin, token: adminToken } = await createAuthenticatedUser();
-    const member = await createUser();
 
-    await createMembership({
-      userId: admin.id,
-      organizationId: organization.id,
-      role: MembershipRole.ADMIN
-    });
-
-    await createMembership({
-      userId: member.id,
-      organizationId: organization.id,
-      role: oldRole
-    });
+    const { token: adminToken } = await createAuthenticatedMember(
+      organization.id,
+      MembershipRole.ADMIN
+    );
+    const member = await createMember(organization.id, oldRole);
     
     await request(app)
       .patch(`/organizations/${organization.id}/memberships/${member.id}`)
@@ -52,23 +44,11 @@ describe('PATCH /organizations/:organizationId/memberships/:userId', () => {
     const newRole = MembershipRole.ADMIN;
     
     const organization = await createOrganization();
-    const {
-      user: nonAdmin,
-      token: nonAdminToken
-    } = await createAuthenticatedUser();
-    const member = await createUser();
-
-    await createMembership({
-      userId: nonAdmin.id,
-      organizationId: organization.id,
-      role: MembershipRole.MEMBER
-    });
-
-    await createMembership({
-      userId: member.id,
-      organizationId: organization.id,
-      role: oldRole
-    });
+    const { token: nonAdminToken } = await createAuthenticatedMember(
+      organization.id,
+      MembershipRole.MEMBER
+    );
+    const member = await createMember(organization.id, oldRole);
     
     await request(app)
       .patch(`/organizations/${organization.id}/memberships/${member.id}`)
@@ -90,13 +70,10 @@ describe('PATCH /organizations/:organizationId/memberships/:userId', () => {
 
   it('prevents last admin from being demoted', async () => {    
     const organization = await createOrganization();
-    const { user: admin, token: adminToken } = await createAuthenticatedUser();
-
-    await createMembership({
-      userId: admin.id,
-      organizationId: organization.id,
-      role: MembershipRole.ADMIN
-    });
+    const { user: admin, token: adminToken } = await createAuthenticatedMember(
+      organization.id,
+      MembershipRole.ADMIN
+    );
     
     await request(app)
       .patch(`/organizations/${organization.id}/memberships/${admin.id}`)
@@ -118,13 +95,10 @@ describe('PATCH /organizations/:organizationId/memberships/:userId', () => {
 
   it('prevents last admin from being removed', async () => {    
     const organization = await createOrganization();
-    const { user: admin, token: adminToken } = await createAuthenticatedUser();
-
-    await createMembership({
-      userId: admin.id,
-      organizationId: organization.id,
-      role: MembershipRole.ADMIN
-    });
+    const { user: admin, token: adminToken } = await createAuthenticatedMember(
+      organization.id,
+      MembershipRole.ADMIN
+    );
     
     await request(app)
       .delete(`/organizations/${organization.id}/memberships/${admin.id}`)
@@ -145,13 +119,10 @@ describe('PATCH /organizations/:organizationId/memberships/:userId', () => {
 
   it('prevents last admin from leaving', async () => {    
     const organization = await createOrganization();
-    const { user: admin, token: adminToken } = await createAuthenticatedUser();
-
-    await createMembership({
-      userId: admin.id,
-      organizationId: organization.id,
-      role: MembershipRole.ADMIN
-    });
+    const { user: admin, token: adminToken } = await createAuthenticatedMember(
+      organization.id,
+      MembershipRole.ADMIN
+    );
     
     await request(app)
       .delete(`/organizations/${organization.id}/membership`)

@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 import { app } from '../../src/app';
-import { createAuthenticatedUser } from '../helpers/auth';
+import { createAuthenticatedMember, createAuthenticatedUser } from '../helpers/auth';
 import { prisma } from '../../src/lib/prisma';
 import { createUser } from '../helpers/user';
 import { createOrganization } from '../helpers/organization';
@@ -12,12 +12,10 @@ describe('POST /organizations/:organizationId/invitations', () => {
   it('allows admins to send invitations', async () => {
     const organization = await createOrganization();
     const invitedUser = await createUser();
-    const { user: admin, token } = await createAuthenticatedUser();
-    await createMembership({
-      userId: admin.id,
-      organizationId: organization.id,
-      role: MembershipRole.ADMIN
-    });
+    const { token } = await createAuthenticatedMember(
+      organization.id,
+      MembershipRole.ADMIN
+    );
 
     await request(app)
       .post(`/organizations/${organization.id}/invitations`)
@@ -40,13 +38,10 @@ describe('POST /organizations/:organizationId/invitations', () => {
   it('rejects invitations from non-admins', async () => {
     const organization = await createOrganization();
     const invitedUser = await createUser();
-    const { user: nonAdmin, token } = await createAuthenticatedUser();
-
-    await createMembership({
-      userId: nonAdmin.id,
-      organizationId: organization.id,
-      role: MembershipRole.MEMBER
-    });
+    const { token } = await createAuthenticatedMember(
+      organization.id,
+      MembershipRole.MEMBER
+    );
 
     await request(app)
       .post(`/organizations/${organization.id}/invitations`)
