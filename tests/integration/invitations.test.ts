@@ -41,6 +41,7 @@ describe('POST /organizations/:organizationId/invitations', () => {
     const organization = await createOrganization();
     const invitedUser = await createUser();
     const { user: nonAdmin, token } = await createAuthenticatedUser();
+
     await createMembership({
       userId: nonAdmin.id,
       organizationId: organization.id,
@@ -63,5 +64,59 @@ describe('POST /organizations/:organizationId/invitations', () => {
     });
     
     expect(invitation).toBeNull();
+  });
+});
+
+describe('POST /invitations/:organizationId/accept', () => {
+  it('creates a membership', async () => {
+    const { user: invitedUser, token } = await createAuthenticatedUser();
+    const organization = await createOrganization();
+    const sender = await createUser();
+
+    await prisma.invitation.create({
+      data: {
+        invitedUserId: invitedUser.id,
+        organizationId: organization.id,
+        senderId: sender.id,
+        role: MembershipRole.MEMBER
+      }
+    });
+    
+    await request(app)
+      .post(`/invitations/${organization.id}/accept`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(204);
+    
+    const membership = await prisma.membership.findUnique({
+      where: {
+        userId_organizationId: {
+          userId: invitedUser.id,
+          organizationId: organization.id
+        }
+      }
+    });
+      
+    expect(membership).not.toBeNull();
+  });
+
+  it('returns 404 when accepting invitation that does not exist', async () => {
+    const { user, token } = await createAuthenticatedUser();
+    const organization = await createOrganization();
+    
+    await request(app)
+      .post(`/invitations/${organization.id}/accept`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(404);
+    
+    const membership = await prisma.membership.findUnique({
+      where: {
+        userId_organizationId: {
+          userId: user.id,
+          organizationId: organization.id
+        }
+      }
+    });
+      
+    expect(membership).toBeNull();
   });
 });
