@@ -6,14 +6,15 @@ import { randomString } from './random';
 
 type TaskFields = Partial<{
   title: string;
-  description: string;
-  status: Status;
-  priority: Priority;
+  assigneeId: string;
 }>;
 
 type CreateTaskOptions = TaskFields & { projectId: string; };
 export async function createTask(options: CreateTaskOptions) {
-  const { description, status, priority, projectId } = options;
+  const {
+    assigneeId,
+    projectId,
+  } = options;
   
   const title = options.title ?? randomString();
   const position = await calculatePosition(projectId);
@@ -21,11 +22,9 @@ export async function createTask(options: CreateTaskOptions) {
   const task = await prisma.task.create({
     data: {
       title,
-      description,
-      status,
-      priority,
       projectId,
-      position
+      assigneeId,
+      position,
     }
   });
 
@@ -34,16 +33,18 @@ export async function createTask(options: CreateTaskOptions) {
 
 type CreateOnlyTaskOptions = TaskFields & { organizationId: string; };
 export async function createOnlyTask(options: CreateOnlyTaskOptions) {
-  const { title, description, status, priority, organizationId } = options;
+  const {
+    title,
+    assigneeId,
+    organizationId,
+  } = options;
 
   const project = await createProject(organizationId);
 
   const task = await createTask({
     title,
-    description,
-    status,
-    priority,
-    projectId: project.id
+    assigneeId,
+    projectId: project.id,
   });
 
   return task;

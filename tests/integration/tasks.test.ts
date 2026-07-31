@@ -48,10 +48,34 @@ describe('PATCH /tasks/:taskId', () => {
       .patch(`/tasks/${id}`)
       .set('Authorization', `Bearer ${token}`)
       .send({ title: newTitle })
-      .expect(403)
+      .expect(403);
     
     const task = await prisma.task.findUnique({ where: { id } });
     
     expect(task?.title).toBe(oldTitle);
+  });
+
+  it('rejects reassignment by non-admins', async () => {
+    const organization = await createOrganization();
+
+    const { user: assignee, token } = await createAuthenticatedMember(
+      organization.id,
+      MembershipRole.MEMBER
+    );
+
+    const { id } = await createOnlyTask({
+      organizationId: organization.id,
+      assigneeId: assignee.id
+    });
+
+    await request(app)
+      .patch(`/tasks/${id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ assigneeId: null })
+      .expect(403);
+    
+    const task = await prisma.task.findUnique({ where: { id } });
+    
+    expect(task?.assigneeId).toBe(assignee.id);
   });
 });
