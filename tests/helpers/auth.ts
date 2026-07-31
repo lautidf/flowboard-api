@@ -16,7 +16,7 @@ export async function createAuthenticatedUser() {
 
 export async function createAuthenticatedMember(
   organizationId: string,
-  role: MembershipRole
+  role = MembershipRole.MEMBER
 ) {
   const authenticatedUser = await createAuthenticatedUser();
   

@@ -4,6 +4,7 @@ import { ConflictError, ForbiddenError, NotFoundError } from '../../errors/error
 import { prisma } from '../../lib/prisma.js';
 import { requireMembership } from '../memberships/membership.helpers.js';
 import { getOrganizationId } from '../projects/project.helpers.js';
+import { calculatePosition } from './task.helpers.js';
 
 type CreateInput = {
   projectId: string;
@@ -25,16 +26,7 @@ export async function create({
   });
 
   try {
-    const maxPosition = await prisma.task.aggregate({
-      where: {
-        projectId
-      },
-      _max: {
-        position: true
-      }
-    });
-  
-    const position = (maxPosition._max.position ?? 0) + 100;
+    const position = await calculatePosition(projectId);
   
     const task = await prisma.task.create({
       data: {

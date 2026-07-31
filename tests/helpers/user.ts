@@ -8,7 +8,7 @@ type CreateUserOptions = Partial<{
   email: string;
   name: string;
   password: string;
-}>
+}>;
 export async function createUser(options: CreateUserOptions = {}) {
   const email = options.email ?? `${randomString()}@example.com`;
   const name = options.name ?? 'Test User';
