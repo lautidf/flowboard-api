@@ -109,8 +109,6 @@ export async function update({
       }
     });
 
-    console.log(JSON.stringify(membership, null, 2));
-
     return membership;
   } catch (error) {
     if (

@@ -1,11 +1,10 @@
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 import { app } from '../../src/app';
-import { createAuthenticatedMember, createAuthenticatedUser } from '../helpers/auth';
+import { createAuthenticatedMember } from '../helpers/auth';
 import { prisma } from '../../src/lib/prisma';
-import { createMember, createUser } from '../helpers/user';
+import { createMember } from '../helpers/user';
 import { createOrganization } from '../helpers/organization';
-import { createMembership } from '../helpers/membership';
 import { MembershipRole } from '../../src/generated/prisma/enums';
 
 describe('PATCH /organizations/:organizationId/memberships/:userId', () => {

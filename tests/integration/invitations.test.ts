@@ -5,7 +5,6 @@ import { createAuthenticatedMember, createAuthenticatedUser } from '../helpers/a
 import { prisma } from '../../src/lib/prisma';
 import { createUser } from '../helpers/user';
 import { createOrganization } from '../helpers/organization';
-import { createMembership } from '../helpers/membership';
 import { MembershipRole } from '../../src/generated/prisma/enums';
 
 describe('POST /organizations/:organizationId/invitations', () => {
