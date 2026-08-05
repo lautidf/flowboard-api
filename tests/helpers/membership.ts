@@ -1,5 +1,5 @@
-import { MembershipRole } from '../../src/generated/prisma/enums';
-import { prisma } from '../../src/lib/prisma';
+import { MembershipRole } from '../../src/generated/prisma/enums.js';
+import { prisma } from '../../src/lib/prisma.js';
 
 type CreateMembershipOptions = {
   userId: string;

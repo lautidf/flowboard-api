@@ -1,12 +1,12 @@
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
-import { app } from '../../src/app';
-import { createAuthenticatedMember } from '../helpers/auth';
-import { prisma } from '../../src/lib/prisma';
-import { createOrganization } from '../helpers/organization';
-import { createProject } from '../helpers/project';
-import { MembershipRole } from '../../src/generated/prisma/enums';
-import { createOnlyTask, createTask } from '../helpers/task';
+import { app } from '../../src/app.js';
+import { createAuthenticatedMember } from '../helpers/auth.js';
+import { prisma } from '../../src/lib/prisma.js';
+import { createOrganization } from '../helpers/organization.js';
+import { createProject } from '../helpers/project.js';
+import { MembershipRole } from '../../src/generated/prisma/enums.js';
+import { createOnlyTask } from '../helpers/task.js';
 
 describe('POST /projects/:projectId/tasks', () => {
   it('creates a task', async () => {

@@ -1,8 +1,8 @@
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
-import { app } from '../../src/app';
-import { prisma } from '../../src/lib/prisma';
-import { createUser } from '../helpers/user';
+import { app } from '../../src/app.js';
+import { prisma } from '../../src/lib/prisma.js';
+import { createUser } from '../helpers/user.js';
 
 describe('POST /register', () => {
   it('creates a new user', async () => {

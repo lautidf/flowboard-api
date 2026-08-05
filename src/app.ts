@@ -1,6 +1,5 @@
 import express, { Response } from 'express';
 import swaggerUi from 'swagger-ui-express';
-import path from 'node:path';
 import { authenticateJWT } from './middleware/auth.middleware.js';
 import { organizationRoutes } from './modules/organizations/organization.routes.js';
 import { errorHandler, notExistentRouteHandler } from './middleware/error.middleware.js';

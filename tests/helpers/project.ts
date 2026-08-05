@@ -1,5 +1,5 @@
-import { prisma } from '../../src/lib/prisma';
-import { randomString } from './random';
+import { prisma } from '../../src/lib/prisma.js';
+import { randomString } from './random.js';
 
 export async function createProject(organizationId: string) {
   const name = randomString();

@@ -1,8 +1,8 @@
-import { MembershipRole } from '../../src/generated/prisma/enums';
-import { prisma } from '../../src/lib/prisma';
-import { hashPassword } from '../../src/modules/auth/password';
-import { createMembership } from './membership';
-import { randomString } from './random';
+import { MembershipRole } from '../../src/generated/prisma/enums.js';
+import { prisma } from '../../src/lib/prisma.js';
+import { hashPassword } from '../../src/modules/auth/password.js';
+import { createMembership } from './membership.js';
+import { randomString } from './random.js';
 
 type CreateUserOptions = Partial<{
   email: string;

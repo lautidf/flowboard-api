@@ -1,11 +1,11 @@
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
-import { app } from '../../src/app';
-import { createAuthenticatedMember, createAuthenticatedUser } from '../helpers/auth';
-import { prisma } from '../../src/lib/prisma';
-import { createUser } from '../helpers/user';
-import { createOrganization } from '../helpers/organization';
-import { MembershipRole } from '../../src/generated/prisma/enums';
+import { app } from '../../src/app.js';
+import { createAuthenticatedMember, createAuthenticatedUser } from '../helpers/auth.js';
+import { prisma } from '../../src/lib/prisma.js';
+import { createUser } from '../helpers/user.js';
+import { createOrganization } from '../helpers/organization.js';
+import { MembershipRole } from '../../src/generated/prisma/enums.js';
 
 describe('POST /organizations/:organizationId/invitations', () => {
   it('allows admins to send invitations', async () => {

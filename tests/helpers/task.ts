@@ -1,8 +1,8 @@
-import { Priority, Status } from '../../src/generated/prisma/enums';
-import { prisma } from '../../src/lib/prisma';
-import { calculatePosition } from '../../src/modules/tasks/task.helpers';
-import { createProject } from './project';
-import { randomString } from './random';
+import { Priority, Status } from '../../src/generated/prisma/enums.js';
+import { prisma } from '../../src/lib/prisma.js';
+import { calculatePosition } from '../../src/modules/tasks/task.helpers.js';
+import { createProject } from './project.js';
+import { randomString } from './random.js';
 
 type TaskFields = Partial<{
   title: string;

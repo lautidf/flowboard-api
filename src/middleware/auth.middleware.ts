@@ -1,5 +1,3 @@
-// Temporary development auth middleware.
-// Replace with real JWT verification later.
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { UnauthorizedError } from '../errors/errors.js';

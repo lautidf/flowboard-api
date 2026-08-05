@@ -1,7 +1,7 @@
-import { MembershipRole } from '../../src/generated/prisma/enums';
-import { generateAccessToken } from '../../src/modules/auth/jwt';
-import { createMembership } from './membership';
-import { createUser } from './user';
+import { MembershipRole } from '../../src/generated/prisma/enums.js';
+import { generateAccessToken } from '../../src/modules/auth/jwt.js';
+import { createMembership } from './membership.js';
+import { createUser } from './user.js';
 
 export async function createAuthenticatedUser() {
   const user = await createUser();
@@ -16,14 +16,14 @@ export async function createAuthenticatedUser() {
 
 export async function createAuthenticatedMember(
   organizationId: string,
-  role = MembershipRole.MEMBER
+  role?: MembershipRole
 ) {
   const authenticatedUser = await createAuthenticatedUser();
   
   await createMembership({
     userId: authenticatedUser.user.id,
     organizationId,
-    role
+    role: role ?? MembershipRole.MEMBER
   });
 
   return authenticatedUser;

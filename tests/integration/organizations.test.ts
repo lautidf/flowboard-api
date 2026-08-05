@@ -1,9 +1,9 @@
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
-import { app } from '../../src/app';
-import { prisma } from '../../src/lib/prisma';
-import { createAuthenticatedUser } from '../helpers/auth';
-import { MembershipRole } from '../../src/generated/prisma/enums';
+import { app } from '../../src/app.js';
+import { prisma } from '../../src/lib/prisma.js';
+import { createAuthenticatedUser } from '../helpers/auth.js';
+import { MembershipRole } from '../../src/generated/prisma/enums.js';
 
 describe('POST /organizations', () => {
   it('creates an organization with the creator as admin', async () => {
