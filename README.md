@@ -192,7 +192,7 @@ PostgreSQL
 ### Prerequisites
 
 - Node.js
-- PostgreSQL
+- Docker Desktop
 
 ### Installation
 
@@ -202,16 +202,26 @@ npm install
 
 ### Environment Variables
 
+Create a .env file:
+
 ```env
-DATABASE_URL=
-JWT_SECRET=
-API_URL=
+DATABASE_URL="postgresql://postgres:postgres@localhost:5433/flowboard?schema=public"
+JWT_SECRET=""
+API_URL=""
 ```
 
 ### Database
 
+Start the PostgreSQL database:
+
 ```bash
-npx prisma migrate deploy
+docker compose up -d
+```
+
+Run the database migrations and generate the Prisma client:
+
+```bash
+npm run prisma:migrate:dev
 ```
 
 ### Start
