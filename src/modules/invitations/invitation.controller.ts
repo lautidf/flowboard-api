@@ -25,7 +25,7 @@ export async function send(req: Request, res: Response) {
     senderId
   });
 
-  res.status(201).json({ message: 'Invitation sent successfully' });
+  res.status(201).send();
 }
 
 export async function getByOrganization(req: Request,  res: Response) {
