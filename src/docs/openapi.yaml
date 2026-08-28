@@ -1,7 +1,7 @@
 components:
   securitySchemes:
     bearerHttpAuthentication:
-      description: Bearer token using a JWT
+      description: Bearer token using a JWT.
       type: http
       scheme: bearer
       bearerFormat: JWT
@@ -14,12 +14,15 @@ components:
           example: Error message
     Id:
       type: string
-      format: cuid
+      pattern: '^c[a-z0-9]{24}$'
+      example: 'ch72gsb320000udmn3v7np9qq'
     UserName:
       type: string
+      example: John Doe
     Email:
       type: string
       format: email
+      example: john.doe@example.com
     User:
       type: object
       properties:
@@ -43,42 +46,34 @@ components:
           $ref: '#/components/schemas/OrganizationName'
     OrganizationName:
       type: string
-    Membership:
-      type: object
-      properties:
-        user:
-          $ref: '#/components/schemas/User'
-        organization:
-          $ref: '#/components/schemas/Organization'
-        role:
-          $ref: '#/components/schemas/Role'
+      example: Example Inc.
   responses:
     BadRequest:
-      description: The request is invalid
+      description: The request is invalid.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
     Unauthorized:
-      description: Authentication is required
+      description: Authentication is required.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'    
     Forbidden:
-      description: Insufficient permissions
+      description: Insufficient permissions.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
     NotFound:
-      description: A referenced resource was not found
+      description: A referenced resource was not found.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
     Conflict:
-      description: The request conflicts with the current state of the resource
+      description: The request conflicts with the current state of the resource.
       content:
         application/json:
           schema:

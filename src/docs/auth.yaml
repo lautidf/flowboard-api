@@ -24,7 +24,7 @@ paths:
                 - password
       responses:
         '201':
-          description: User registered successfully
+          description: User registered successfully.
           content:
             application/json:
               schema:
@@ -55,7 +55,7 @@ paths:
                 - password
       responses:
         '200':
-          description: User logged in successfully
+          description: User logged in successfully.
           content:
             application/json:
               schema:
@@ -65,14 +65,16 @@ paths:
                     $ref: '#/components/schemas/User'
                   token:
                     type: string
-                    format: JWT
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
-          description: Invalid credentials
+          description: Invalid credentials.
           schema:
             $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
     Password:
       type: string
+      minLength: 8
+      example: password

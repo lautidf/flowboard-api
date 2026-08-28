@@ -14,12 +14,12 @@ paths:
               type: object
               properties:
                 name:
-                  type: string
+                  $ref: '#/components/schemas/ProjectName'
               required:
                 - name
       responses:
         '201':
-          description: Project created successfully
+          description: Project created successfully.
           content:
             application/json:
               schema:
@@ -40,7 +40,7 @@ paths:
         - $ref: '#/components/parameters/organizationId'
       responses:
         '200':
-          description: A list of projects
+          description: A list of projects.
           content:
             application/json:
               schema:
@@ -64,18 +64,11 @@ paths:
         - $ref: '#/components/parameters/projectId'
       responses:
         '200':
-          description: Project details
+          description: Project details.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    $ref: '#/components/schemas/Id'
-                  name:
-                    $ref: '#/components/schemas/ProjectName'
-                  organizationId:
-                    $ref: '#/components/schemas/Id'
+                $ref: '#/components/schemas/Project'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -92,7 +85,7 @@ paths:
         - $ref: '#/components/parameters/projectId'
       responses:
         '204':
-          description: Project deleted successfully
+          description: Project deleted successfully.
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -105,6 +98,7 @@ components:
   schemas:
     ProjectName:
       type: string
+      example: Inventory Tracking System
     Project:
       type: object
       properties:

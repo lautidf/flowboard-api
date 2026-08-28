@@ -6,7 +6,7 @@ paths:
         - Users
       responses:
         '204':
-          description: User deleted successfully
+          description: User deleted successfully.
         '401':
           $ref: '#/components/responses/Unauthorized'
         '409':
