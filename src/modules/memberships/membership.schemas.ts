@@ -3,8 +3,8 @@ import { MembershipRole } from '../../generated/prisma/enums.js';
 
 export const updateRequestSchema = z.object({
   params: z.object({
-    organizationId: z.cuid2(),
-    userId: z.cuid2()
+    organizationId: z.cuid(),
+    userId: z.cuid()
   }),
   body: z.object({
     role: z.enum(MembershipRole)
@@ -13,19 +13,19 @@ export const updateRequestSchema = z.object({
 
 export const getByOrganizationRequestSchema = z.object({
   params: z.object({
-    organizationId: z.cuid2()
+    organizationId: z.cuid()
   })
 });
 
 export const removeRequestSchema = z.object({
   params: z.object({
-    organizationId: z.cuid2(),
-    userId: z.cuid2()
+    organizationId: z.cuid(),
+    userId: z.cuid()
   })
 });
 
 export const leaveRequestSchema = z.object({
   params: z.object({
-    organizationId: z.cuid2()
+    organizationId: z.cuid()
   })
 });

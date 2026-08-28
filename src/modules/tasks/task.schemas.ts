@@ -3,7 +3,7 @@ import { Priority, Status } from '../../generated/prisma/enums.js';
 
 export const createRequestSchema = z.object({
   params: z.object({
-    projectId: z.cuid2()
+    projectId: z.cuid()
   }),
   body: z.strictObject({
     title: z.string().min(1).max(255),
@@ -16,7 +16,7 @@ export const createRequestSchema = z.object({
 
 export const getByProjectRequestSchema = z.object({
   params: z.object({
-    projectId: z.cuid2()
+    projectId: z.cuid()
   }),
   query: z.object({
     priority: z.enum(Priority).optional(),
@@ -27,19 +27,19 @@ export const getByProjectRequestSchema = z.object({
 
 export const getOneRequestSchema = z.object({
   params: z.object({
-    taskId: z.cuid2()
+    taskId: z.cuid()
   })
 });
 
 export const updateRequestSchema = z.object({
   params: z.object({
-    taskId: z.cuid2()
+    taskId: z.cuid()
   }),
   body: z.strictObject({
     title: z.string().min(1).max(255).optional(),
     description: z.string().min(1).max(2000).nullable().optional(),
     priority: z.enum(Priority).optional(),
-    assigneeId: z.cuid2().nullable().optional(),
+    assigneeId: z.cuid().nullable().optional(),
     status: z.enum(Status).optional(),
     position: z.number().int().optional()
   }).refine(
@@ -50,6 +50,6 @@ export const updateRequestSchema = z.object({
 
 export const removeRequestSchema = z.object({
   params: z.object({
-    taskId: z.cuid2()
+    taskId: z.cuid()
   })
 });

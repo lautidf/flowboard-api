@@ -15,12 +15,12 @@ export const getAllRequestSchema = z.object({
 
 export const getOneRequestSchema = z.object({
   params: z.object({
-    organizationId: z.cuid2()
+    organizationId: z.cuid()
   })
 });
 
 export const removeRequestSchema = z.object({
   params: z.object({
-    organizationId: z.cuid2()
+    organizationId: z.cuid()
   })
 });
