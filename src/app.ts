@@ -30,7 +30,7 @@ app.use(
 app.use(express.json());
 
 app.get('/', (_req, res: Response) => {
-  res.redirect('/docs');
+  res.json({ status: 'ok' });
 });
 
 app.use('/', authRoutes);
