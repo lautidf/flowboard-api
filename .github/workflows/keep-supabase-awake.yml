@@ -23,6 +23,6 @@ jobs:
 
           echo "Status: $STATUS"
 
-          if [ "$STATUS" != "401" ]; then
+          if [ "$STATUS" != "200" ] && [ "$STATUS" != "401" ]; then
             exit 1
           fi
