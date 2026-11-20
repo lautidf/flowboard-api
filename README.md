@@ -19,13 +19,14 @@ Multi-tenant project management API built with Node.js, TypeScript, Express, Pri
 
 ## Tech Stack
 
-- Node.js
-- TypeScript
-- Express
-- Prisma ORM
-- PostgreSQL
-- Zod
-- JWT
+- **Runtime:** Node.js
+- **Language:** TypeScript
+- **Framework:** Express
+- **Database:** PostgreSQL
+- **ORM:** Prisma
+- **Validation:** Zod
+- **API Documentation:** OpenAPI / Swagger UI
+- **Testing:** Vitest and Supertest
 
 ## Data Model
 
@@ -188,12 +189,13 @@ PostgreSQL
 |----------|----------|
 | DELETE | /me |
 
-## Setup
+## Getting Started
 
 ### Prerequisites
 
-- Node.js
-- Docker Desktop
+- Node.js 26.13.1
+- Docker and Docker Compose
+- npm
 
 ### Installation
 
@@ -203,17 +205,22 @@ npm install
 
 ### Environment Variables
 
-Create a .env file:
+Create a `.env` file in the project root and configure the following variables:
 
 ```env
-DATABASE_URL="postgresql://postgres:postgres@localhost:5433/flowboard?schema=public"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5433/flowboard"
 JWT_SECRET=""
 API_URL=""
+PORT=""
 ```
 
 ### Database
 
-Start the PostgreSQL database:
+The project uses Docker Compose to run two PostgreSQL instances:
+- **Development database:** `flowboard` (port `5433`).
+- **Test database:** `flowboard_test` (port `5434`).
+
+Start both databases:
 
 ```bash
 docker compose up -d
@@ -225,8 +232,26 @@ Run the database migrations and generate the Prisma client:
 npm run prisma:migrate:dev
 ```
 
-### Start
+### Run the Application
 
 ```bash
 npm run dev
+```
+
+The API will be available at `http://localhost:[PORT]`.
+
+## API Documentation
+
+Interactive API documentation is available through Swagger UI:
+
+```text
+/docs
+```
+
+It describes the available endpoints, request parameters, request bodies, and responses.
+
+## Running Tests
+
+```bash
+npm run test:integration
 ```
